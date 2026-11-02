@@ -1,0 +1,798 @@
+{
+  "timestamp": "2026-11-02T17:51:14",
+  "model": "gemini-3.5-flash-lite",
+  "temperature": 0.0,
+  "prompt_path": "prompts/versions/v1.md",
+  "prompt_sha256": "3bc91e416af312bf34ddeadc4c55e476f9e19ff3c0d3bea49c47ba0fc700d429",
+  "dataset_path": "evals/dataset.jsonl",
+  "dataset_sha256": "de3da1692a4c03dfe80d54a2b503ee9fdbeabb7294da551fe3d2f118d0b24ef0",
+  "dataset_rows": 42,
+  "category_accuracy": {
+    "correct": 29,
+    "total": 42,
+    "accuracy": 0.6904761904761905
+  },
+  "urgency_accuracy": {
+    "correct": 22,
+    "total": 42,
+    "accuracy": 0.5238095238095238
+  },
+  "hard_category_accuracy": {
+    "correct": 14,
+    "total": 18,
+    "accuracy": 0.7777777777777778
+  },
+  "hard_urgency_accuracy": {
+    "correct": 11,
+    "total": 18,
+    "accuracy": 0.6111111111111112
+  },
+  "confusion_matrix": {
+    "auth": {
+      "auth": 9,
+      "payment": 0,
+      "delivery": 0,
+      "technical": 0,
+      "other": 0,
+      "error": 1
+    },
+    "payment": {
+      "auth": 0,
+      "payment": 8,
+      "delivery": 0,
+      "technical": 0,
+      "other": 1,
+      "error": 0
+    },
+    "delivery": {
+      "auth": 0,
+      "payment": 0,
+      "delivery": 8,
+      "technical": 0,
+      "other": 0,
+      "error": 0
+    },
+    "technical": {
+      "auth": 0,
+      "payment": 1,
+      "delivery": 0,
+      "technical": 3,
+      "other": 0,
+      "error": 4
+    },
+    "other": {
+      "auth": 0,
+      "payment": 0,
+      "delivery": 1,
+      "technical": 0,
+      "other": 1,
+      "error": 5
+    }
+  },
+  "errors": [
+    {
+      "id": 2,
+      "text": "Как поменять номер телефона, привязанный к аккаунту?",
+      "expected_category": "auth",
+      "expected_urgency": "low",
+      "predicted_category": "auth",
+      "predicted_urgency": "medium",
+      "error": null
+    },
+    {
+      "id": 7,
+      "text": "Хочу узнать, какие тарифы есть для бизнеса",
+      "expected_category": "payment",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "error": null
+    },
+    {
+      "id": 8,
+      "text": "Чек по последней покупке не пришёл на почту, пришлите, пожалуйста",
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "low",
+      "error": null
+    },
+    {
+      "id": 9,
+      "text": "Возврат за отменённый заказ обещали за 3 дня, прошла неделя, денег до сих пор нет",
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 11,
+      "text": "Курьер не приехал в назначенное время, жду с самого утра",
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 15,
+      "text": "Можно ли доставить заказ в пункт выдачи вместо домашнего адреса?",
+      "expected_category": "delivery",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "error": null
+    },
+    {
+      "id": 17,
+      "text": "На сайте не грузятся картинки товаров, но в приложении всё нормально",
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 26.491014873s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '26s'}]}})"
+    },
+    {
+      "id": 18,
+      "text": "Кнопка «Добавить в корзину» не нажимается в Safari, в Chrome работает",
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 21.814111192s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '21s'}]}})"
+    },
+    {
+      "id": 19,
+      "text": "Каталог не открывается ни на сайте, ни в приложении, везде ошибка 500",
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 17.872119919s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}})"
+    },
+    {
+      "id": 20,
+      "text": "В тёмной теме приложения местами белый текст на белом фоне, приходится выделять, чтобы прочитать",
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 12.636336969s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}})"
+    },
+    {
+      "id": 21,
+      "text": "Добавьте, пожалуйста, возможность сохранять список избранного",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 8.25385995s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '8s'}]}})"
+    },
+    {
+      "id": 22,
+      "text": "Работаете ли вы в праздничные дни?",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 2.854387593s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2s'}]}})"
+    },
+    {
+      "id": 23,
+      "text": "Хочу предложить сотрудничество, с кем можно связаться?",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 58.427128474s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '58s'}]}})"
+    },
+    {
+      "id": 24,
+      "text": "Вы классные, пользуюсь уже два года и всем советую",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 53.240614517s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '53s'}]}})"
+    },
+    {
+      "id": 25,
+      "text": "не могу зайти, пишет нверный пороль, уже три раза сбрасывал",
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 47.923668867s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '47s'}]}})"
+    },
+    {
+      "id": 26,
+      "text": "ltymub cgbcfkb ldf hfpf pf jlby pfrfp",
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "medium",
+      "error": null
+    },
+    {
+      "id": 27,
+      "text": "zakaz ne priehal uzhe nedelyu, kur'er ne otvechaet na zvonki",
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 28,
+      "text": "приложениезависаетнаэкранеоплатыикрутитсябесконечно",
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 33,
+      "text": "не рабоатет",
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 35,
+      "text": "оплта не прошла, а заказ всё равно оформился — с меня потом спишут?",
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 37,
+      "text": "Спасибо курьеру Ержану, очень вежливый и быстрый!",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "low",
+      "error": null
+    },
+    {
+      "id": 38,
+      "text": "Здравствуйте. Пишу уже не первый раз, прошлые обращения остались без ответа. Две недели назад я оформил заказ на кухонный комбайн, оплатил сразу картой, всё прошло нормально, чек пришёл. Потом в приложении статус поменялся на «в пути», и с тех пор ничего не происходит. Трек-номер на сайте перевозчика не находится, в чате поддержки отвечает только бот. Я не прошу ничего особенного, просто скажите, где мой заказ и когда его привезут.",
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 42,
+      "text": "cgfcb,j",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 23.904099212s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '23s'}]}})"
+    }
+  ],
+  "latency_s": {
+    "total": 81.94726975192316,
+    "mean": 1.9511254702838847
+  },
+  "token_usage": {
+    "prompt_tokens": 2720,
+    "output_tokens": 1289,
+    "thinking_tokens": 0,
+    "total_tokens": 4009
+  },
+  "summaries_trimmed": 0,
+  "predictions": [
+    {
+      "id": 1,
+      "text": "Не могу войти в аккаунт: пишет, что пароль неверный, хотя я его не менял",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в аккаунт из-за ошибки неверного пароля.",
+      "error": null,
+      "latency_s": 1.371636124997167
+    },
+    {
+      "id": 2,
+      "text": "Как поменять номер телефона, привязанный к аккаунту?",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "low",
+      "predicted_category": "auth",
+      "predicted_urgency": "medium",
+      "summary": "Пользователь хочет узнать, как изменить номер телефона, привязанный к аккаунту.",
+      "error": null,
+      "latency_s": 0.7938326250005048
+    },
+    {
+      "id": 3,
+      "text": "Аккаунт заблокировали после трёх попыток ввода пароля, а мне срочно нужно оформить заказ",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Аккаунт заблокирован после трех неверных попыток ввода пароля.",
+      "error": null,
+      "latency_s": 0.8240903750120196
+    },
+    {
+      "id": 4,
+      "text": "Письмо для подтверждения регистрации пришло только через час, сейчас уже всё работает, просто сообщаю",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "low",
+      "predicted_category": "auth",
+      "predicted_urgency": "low",
+      "summary": "Письмо для подтверждения регистрации пришло с задержкой в один час.",
+      "error": null,
+      "latency_s": 0.7656752500042785
+    },
+    {
+      "id": 5,
+      "text": "Восстановление пароля по почте не работает, но через SMS войти получилось",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "medium",
+      "predicted_category": "auth",
+      "predicted_urgency": "medium",
+      "summary": "Не работает восстановление пароля по электронной почте, но удалось войти через SMS.",
+      "error": null,
+      "latency_s": 1.0714866249763872
+    },
+    {
+      "id": 6,
+      "text": "Деньги за заказ списали два раза, верните вторую оплату",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "С карты клиента дважды списали деньги за один и тот же заказ.",
+      "error": null,
+      "latency_s": 0.9888181670103222
+    },
+    {
+      "id": 7,
+      "text": "Хочу узнать, какие тарифы есть для бизнеса",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Пользователь запрашивает информацию о доступных тарифах для бизнеса.",
+      "error": null,
+      "latency_s": 0.8401795419922564
+    },
+    {
+      "id": 8,
+      "text": "Чек по последней покупке не пришёл на почту, пришлите, пожалуйста",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "low",
+      "summary": "Клиент просит выслать чек по последней покупке, так как он не пришел на почту.",
+      "error": null,
+      "latency_s": 0.829271875001723
+    },
+    {
+      "id": 9,
+      "text": "Возврат за отменённый заказ обещали за 3 дня, прошла неделя, денег до сих пор нет",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Задержался возврат денежных средств за отменённый заказ.",
+      "error": null,
+      "latency_s": 0.7321044999989681
+    },
+    {
+      "id": 10,
+      "text": "Карта не проходит при оплате, другой картой оплатить получилось",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "medium",
+      "summary": "Возникла ошибка при оплате банковской картой, но другой картой платеж прошел.",
+      "error": null,
+      "latency_s": 0.9628846249834169
+    },
+    {
+      "id": 11,
+      "text": "Курьер не приехал в назначенное время, жду с самого утра",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Курьер не приехал в назначенное время, клиент ждет с самого утра.",
+      "error": null,
+      "latency_s": 0.773491500003729
+    },
+    {
+      "id": 12,
+      "text": "Подскажите, сколько обычно идёт доставка в Караганду?",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "low",
+      "summary": "Клиент интересуется сроками доставки в Караганду.",
+      "error": null,
+      "latency_s": 0.8462849170027766
+    },
+    {
+      "id": 13,
+      "text": "Статус заказа уже пять дней «передан в доставку» и не меняется",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "summary": "Статус заказа не меняется в течение пяти дней после передачи в доставку.",
+      "error": null,
+      "latency_s": 0.8177436670230236
+    },
+    {
+      "id": 14,
+      "text": "Привезли не тот товар, а он нужен мне сегодня к вечеру на день рождения",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "high",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Привезли не тот товар, который срочно нужен сегодня к вечеру.",
+      "error": null,
+      "latency_s": 0.8674757499829866
+    },
+    {
+      "id": 15,
+      "text": "Можно ли доставить заказ в пункт выдачи вместо домашнего адреса?",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "summary": "Клиент спрашивает о возможности изменить адрес доставки на пункт выдачи.",
+      "error": null,
+      "latency_s": 0.9505754999991041
+    },
+    {
+      "id": 16,
+      "text": "Приложение вылетает сразу после запуска, ничего не могу сделать",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "technical",
+      "predicted_urgency": "high",
+      "summary": "Приложение вылетает сразу после запуска",
+      "error": null,
+      "latency_s": 0.8288039579929318
+    },
+    {
+      "id": 17,
+      "text": "На сайте не грузятся картинки товаров, но в приложении всё нормально",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 26.491014873s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '26s'}]}})",
+      "latency_s": 5.095824582997011
+    },
+    {
+      "id": 18,
+      "text": "Кнопка «Добавить в корзину» не нажимается в Safari, в Chrome работает",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 21.814111192s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '21s'}]}})",
+      "latency_s": 4.681156125006964
+    },
+    {
+      "id": 19,
+      "text": "Каталог не открывается ни на сайте, ни в приложении, везде ошибка 500",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 17.872119919s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}})",
+      "latency_s": 3.941061666002497
+    },
+    {
+      "id": 20,
+      "text": "В тёмной теме приложения местами белый текст на белом фоне, приходится выделять, чтобы прочитать",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 12.636336969s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}})",
+      "latency_s": 5.238511583011132
+    },
+    {
+      "id": 21,
+      "text": "Добавьте, пожалуйста, возможность сохранять список избранного",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 8.25385995s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.5-flash-lite', 'location': 'global'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '8s'}]}})",
+      "latency_s": 4.378024334000656
+    },
+    {
+      "id": 22,
+      "text": "Работаете ли вы в праздничные дни?",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 2.854387593s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2s'}]}})",
+      "latency_s": 5.399328333995072
+    },
+    {
+      "id": 23,
+      "text": "Хочу предложить сотрудничество, с кем можно связаться?",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 58.427128474s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '58s'}]}})",
+      "latency_s": 4.429905416996917
+    },
+    {
+      "id": 24,
+      "text": "Вы классные, пользуюсь уже два года и всем советую",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 53.240614517s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '53s'}]}})",
+      "latency_s": 5.189219374995446
+    },
+    {
+      "id": 25,
+      "text": "не могу зайти, пишет нверный пороль, уже три раза сбрасывал",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 47.923668867s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '47s'}]}})",
+      "latency_s": 5.322265875001904
+    },
+    {
+      "id": 26,
+      "text": "ltymub cgbcfkb ldf hfpf pf jlby pfrfp",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "medium",
+      "summary": "Клиент сообщает о двойном списании средств за заказ.",
+      "error": null,
+      "latency_s": 5.504010250006104
+    },
+    {
+      "id": 27,
+      "text": "zakaz ne priehal uzhe nedelyu, kur'er ne otvechaet na zvonki",
+      "hard": true,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Заказ не приехал уже неделю, и курьер не отвечает на звонки.",
+      "error": null,
+      "latency_s": 1.001835333998315
+    },
+    {
+      "id": 28,
+      "text": "приложениезависаетнаэкранеоплатыикрутитсябесконечно",
+      "hard": true,
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Приложение зависает на экране оплаты и бесконечно загружается.",
+      "error": null,
+      "latency_s": 2.5006432499794755
+    },
+    {
+      "id": 29,
+      "text": "ВЕРНИТЕ ДЕНЬГИ!!! СПИСАЛИ ЗА ПОДПИСКУ КОТОРУЮ Я ОТМЕНИЛ!!!",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Пользователь требует вернуть деньги за подписку, которая была отменена.",
+      "error": null,
+      "latency_s": 0.8080123749969061
+    },
+    {
+      "id": 30,
+      "text": "щас не могу войти ваще, смс не приходит, помогите плз",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в систему, так как не приходит СМС.",
+      "error": null,
+      "latency_s": 0.7657082910009194
+    },
+    {
+      "id": 31,
+      "text": "Сәлеметсіз бе, заказ әлі келмеді, қашан доставка болады?",
+      "hard": true,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "summary": "Клиент интересуется статусом доставки своего заказа.",
+      "error": null,
+      "latency_s": 0.9457381250103936
+    },
+    {
+      "id": 32,
+      "text": "payment failed но деньги списались, plz chek",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Платеж не прошел, но деньги с карты были списаны.",
+      "error": null,
+      "latency_s": 0.8458940419950522
+    },
+    {
+      "id": 33,
+      "text": "не рабоатет",
+      "hard": true,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "high",
+      "summary": "Клиент сообщает, что ничего не работает.",
+      "error": null,
+      "latency_s": 0.8568900829995982
+    },
+    {
+      "id": 34,
+      "text": "забыл пороль",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "medium",
+      "predicted_category": "auth",
+      "predicted_urgency": "medium",
+      "summary": "Пользователь забыл пароль от учетной записи.",
+      "error": null,
+      "latency_s": 0.8110169580031652
+    },
+    {
+      "id": 35,
+      "text": "оплта не прошла, а заказ всё равно оформился — с меня потом спишут?",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Не прошла оплата при оформлении заказа, клиент беспокоится о возможном списании средств.",
+      "error": null,
+      "latency_s": 0.8158154999837279
+    },
+    {
+      "id": 36,
+      "text": "Отличный сервис: третий раз ввожу код из смс и третий раз «неверный код». Браво.",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в систему из-за ошибки с смс-кодом.",
+      "error": null,
+      "latency_s": 0.7632751670025755
+    },
+    {
+      "id": 37,
+      "text": "Спасибо курьеру Ержану, очень вежливый и быстрый!",
+      "hard": true,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "low",
+      "summary": "Клиент оставил положительный отзыв о вежливом и быстром курьере Ержане.",
+      "error": null,
+      "latency_s": 1.0591703329992015
+    },
+    {
+      "id": 38,
+      "text": "Здравствуйте. Пишу уже не первый раз, прошлые обращения остались без ответа. Две недели назад я оформил заказ на кухонный комбайн, оплатил сразу картой, всё прошло нормально, чек пришёл. Потом в приложении статус поменялся на «в пути», и с тех пор ничего не происходит. Трек-номер на сайте перевозчика не находится, в чате поддержки отвечает только бот. Я не прошу ничего особенного, просто скажите, где мой заказ и когда его привезут.",
+      "hard": true,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Заказ оплачен две недели назад, но завис в статусе в пути, трек-номер не работает, а поддержка не отвечает.",
+      "error": null,
+      "latency_s": 0.8633489169878885
+    },
+    {
+      "id": 39,
+      "text": "сайт выдаёт ошибку при попытке сохранить адрес доставки, пишет что-то про сервер",
+      "hard": true,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "medium",
+      "summary": "Ошибка сервера при попытке сохранить адрес доставки на сайте.",
+      "error": null,
+      "latency_s": 0.7215964169881772
+    },
+    {
+      "id": 40,
+      "text": "cant login to my acount, forgot pasword and reset email never comes",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в аккаунт, так как письмо для восстановления пароля не приходит.",
+      "error": null,
+      "latency_s": 0.7395477920072153
+    },
+    {
+      "id": 41,
+      "text": "а у вас есть вакансии? хочу рабоать курьером",
+      "hard": true,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Пользователь интересуется наличием вакансий и хочет устроиться курьером.",
+      "error": null,
+      "latency_s": 0.764246666978579
+    },
+    {
+      "id": 42,
+      "text": "cgfcb,j",
+      "hard": true,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": null,
+      "predicted_urgency": null,
+      "summary": null,
+      "error": "ClassifierError: model call failed (ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\\nPlease retry in 23.904099212s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.5-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '23s'}]}})",
+      "latency_s": 4.24086795799667
+    }
+  ]
+}

@@ -1,0 +1,690 @@
+{
+  "timestamp": "2026-11-02T17:53:00",
+  "model": "gemini-3.5-flash-lite",
+  "temperature": 0.0,
+  "prompt_path": "prompts/versions/v1.md",
+  "prompt_sha256": "3bc91e416af312bf34ddeadc4c55e476f9e19ff3c0d3bea49c47ba0fc700d429",
+  "dataset_path": "evals/dataset.jsonl",
+  "dataset_sha256": "de3da1692a4c03dfe80d54a2b503ee9fdbeabb7294da551fe3d2f118d0b24ef0",
+  "dataset_rows": 42,
+  "category_accuracy": {
+    "correct": 39,
+    "total": 42,
+    "accuracy": 0.9285714285714286
+  },
+  "urgency_accuracy": {
+    "correct": 34,
+    "total": 42,
+    "accuracy": 0.8095238095238095
+  },
+  "hard_category_accuracy": {
+    "correct": 16,
+    "total": 18,
+    "accuracy": 0.8888888888888888
+  },
+  "hard_urgency_accuracy": {
+    "correct": 14,
+    "total": 18,
+    "accuracy": 0.7777777777777778
+  },
+  "confusion_matrix": {
+    "auth": {
+      "auth": 10,
+      "payment": 0,
+      "delivery": 0,
+      "technical": 0,
+      "other": 0,
+      "error": 0
+    },
+    "payment": {
+      "auth": 0,
+      "payment": 8,
+      "delivery": 0,
+      "technical": 0,
+      "other": 1,
+      "error": 0
+    },
+    "delivery": {
+      "auth": 0,
+      "payment": 0,
+      "delivery": 8,
+      "technical": 0,
+      "other": 0,
+      "error": 0
+    },
+    "technical": {
+      "auth": 0,
+      "payment": 1,
+      "delivery": 0,
+      "technical": 7,
+      "other": 0,
+      "error": 0
+    },
+    "other": {
+      "auth": 0,
+      "payment": 0,
+      "delivery": 1,
+      "technical": 0,
+      "other": 6,
+      "error": 0
+    }
+  },
+  "errors": [
+    {
+      "id": 7,
+      "text": "Хочу узнать, какие тарифы есть для бизнеса",
+      "expected_category": "payment",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "error": null
+    },
+    {
+      "id": 8,
+      "text": "Чек по последней покупке не пришёл на почту, пришлите, пожалуйста",
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "low",
+      "error": null
+    },
+    {
+      "id": 9,
+      "text": "Возврат за отменённый заказ обещали за 3 дня, прошла неделя, денег до сих пор нет",
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 11,
+      "text": "Курьер не приехал в назначенное время, жду с самого утра",
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 15,
+      "text": "Можно ли доставить заказ в пункт выдачи вместо домашнего адреса?",
+      "expected_category": "delivery",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "error": null
+    },
+    {
+      "id": 26,
+      "text": "ltymub cgbcfkb ldf hfpf pf jlby pfrfp",
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "medium",
+      "error": null
+    },
+    {
+      "id": 27,
+      "text": "zakaz ne priehal uzhe nedelyu, kur'er ne otvechaet na zvonki",
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 28,
+      "text": "приложениезависаетнаэкранеоплатыикрутитсябесконечно",
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 35,
+      "text": "оплта не прошла, а заказ всё равно оформился — с меня потом спишут?",
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "error": null
+    },
+    {
+      "id": 37,
+      "text": "Спасибо курьеру Ержану, очень вежливый и быстрый!",
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "low",
+      "error": null
+    },
+    {
+      "id": 38,
+      "text": "Здравствуйте. Пишу уже не первый раз, прошлые обращения остались без ответа. Две недели назад я оформил заказ на кухонный комбайн, оплатил сразу картой, всё прошло нормально, чек пришёл. Потом в приложении статус поменялся на «в пути», и с тех пор ничего не происходит. Трек-номер на сайте перевозчика не находится, в чате поддержки отвечает только бот. Я не прошу ничего особенного, просто скажите, где мой заказ и когда его привезут.",
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "error": null
+    }
+  ],
+  "latency_s": {
+    "total": 162.04222517096787,
+    "mean": 3.858148218356378
+  },
+  "token_usage": {
+    "prompt_tokens": 3521,
+    "output_tokens": 1640,
+    "thinking_tokens": 0,
+    "total_tokens": 5161
+  },
+  "summaries_trimmed": 0,
+  "predictions": [
+    {
+      "id": 1,
+      "text": "Не могу войти в аккаунт: пишет, что пароль неверный, хотя я его не менял",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в аккаунт из-за ошибки неверного пароля.",
+      "error": null,
+      "latency_s": 3.450226583983749
+    },
+    {
+      "id": 2,
+      "text": "Как поменять номер телефона, привязанный к аккаунту?",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "low",
+      "predicted_category": "auth",
+      "predicted_urgency": "low",
+      "summary": "Пользователь спрашивает, как изменить номер телефона, привязанный к аккаунту.",
+      "error": null,
+      "latency_s": 19.22115045899409
+    },
+    {
+      "id": 3,
+      "text": "Аккаунт заблокировали после трёх попыток ввода пароля, а мне срочно нужно оформить заказ",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Аккаунт заблокирован после трех неудачных попыток ввода пароля.",
+      "error": null,
+      "latency_s": 0.845216541987611
+    },
+    {
+      "id": 4,
+      "text": "Письмо для подтверждения регистрации пришло только через час, сейчас уже всё работает, просто сообщаю",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "low",
+      "predicted_category": "auth",
+      "predicted_urgency": "low",
+      "summary": "Письмо для подтверждения регистрации пришло с задержкой в один час.",
+      "error": null,
+      "latency_s": 0.8512086249829736
+    },
+    {
+      "id": 5,
+      "text": "Восстановление пароля по почте не работает, но через SMS войти получилось",
+      "hard": false,
+      "expected_category": "auth",
+      "expected_urgency": "medium",
+      "predicted_category": "auth",
+      "predicted_urgency": "medium",
+      "summary": "Не работает восстановление пароля по почте, но удалось войти через SMS.",
+      "error": null,
+      "latency_s": 0.792847000004258
+    },
+    {
+      "id": 6,
+      "text": "Деньги за заказ списали два раза, верните вторую оплату",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "С карты дважды списали деньги за один и тот же заказ.",
+      "error": null,
+      "latency_s": 0.9592372909828555
+    },
+    {
+      "id": 7,
+      "text": "Хочу узнать, какие тарифы есть для бизнеса",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Клиент интересуется доступными тарифными планами для бизнеса.",
+      "error": null,
+      "latency_s": 0.812898915988626
+    },
+    {
+      "id": 8,
+      "text": "Чек по последней покупке не пришёл на почту, пришлите, пожалуйста",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "low",
+      "summary": "Клиент просит выслать чек по последней покупке на электронную почту.",
+      "error": null,
+      "latency_s": 1.169144374987809
+    },
+    {
+      "id": 9,
+      "text": "Возврат за отменённый заказ обещали за 3 дня, прошла неделя, денег до сих пор нет",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Задержался возврат денежных средств за отмененный заказ.",
+      "error": null,
+      "latency_s": 0.8627118750009686
+    },
+    {
+      "id": 10,
+      "text": "Карта не проходит при оплате, другой картой оплатить получилось",
+      "hard": false,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "medium",
+      "summary": "Основная банковская карта не прошла при оплате заказа, но удалось успешно рассчитаться другой.",
+      "error": null,
+      "latency_s": 1.140236916980939
+    },
+    {
+      "id": 11,
+      "text": "Курьер не приехал в назначенное время, жду с самого утра",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Курьер не приехал в назначенное время.",
+      "error": null,
+      "latency_s": 0.9366271670151036
+    },
+    {
+      "id": 12,
+      "text": "Подскажите, сколько обычно идёт доставка в Караганду?",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "low",
+      "summary": "Клиент интересуется сроками доставки заказа в город Караганда.",
+      "error": null,
+      "latency_s": 0.7858484589960426
+    },
+    {
+      "id": 13,
+      "text": "Статус заказа уже пять дней «передан в доставку» и не меняется",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "summary": "Статус заказа не меняется в течение пяти дней после передачи в доставку.",
+      "error": null,
+      "latency_s": 0.999588666978525
+    },
+    {
+      "id": 14,
+      "text": "Привезли не тот товар, а он нужен мне сегодня к вечеру на день рождения",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "high",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Привезли не тот товар, который срочно нужен сегодня вечером.",
+      "error": null,
+      "latency_s": 0.7950249580026139
+    },
+    {
+      "id": 15,
+      "text": "Можно ли доставить заказ в пункт выдачи вместо домашнего адреса?",
+      "hard": false,
+      "expected_category": "delivery",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "summary": "Клиент спрашивает о возможности изменить адрес доставки на пункт выдачи.",
+      "error": null,
+      "latency_s": 0.9148380419937894
+    },
+    {
+      "id": 16,
+      "text": "Приложение вылетает сразу после запуска, ничего не могу сделать",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "technical",
+      "predicted_urgency": "high",
+      "summary": "Приложение вылетает сразу после запуска.",
+      "error": null,
+      "latency_s": 1.0507953749911394
+    },
+    {
+      "id": 17,
+      "text": "На сайте не грузятся картинки товаров, но в приложении всё нормально",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "medium",
+      "summary": "На сайте не загружаются изображения товаров, хотя в мобильном приложении всё работает корректно.",
+      "error": null,
+      "latency_s": 0.8173364159883931
+    },
+    {
+      "id": 18,
+      "text": "Кнопка «Добавить в корзину» не нажимается в Safari, в Chrome работает",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "medium",
+      "summary": "Не работает кнопка добавления в корзину при использовании браузера Safari.",
+      "error": null,
+      "latency_s": 35.53806741698645
+    },
+    {
+      "id": 19,
+      "text": "Каталог не открывается ни на сайте, ни в приложении, везде ошибка 500",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "technical",
+      "predicted_urgency": "high",
+      "summary": "Каталог не открывается на сайте и в приложении, выдавая ошибку 500.",
+      "error": null,
+      "latency_s": 5.372730084025534
+    },
+    {
+      "id": 20,
+      "text": "В тёмной теме приложения местами белый текст на белом фоне, приходится выделять, чтобы прочитать",
+      "hard": false,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "medium",
+      "summary": "В темной теме приложения белый текст сливается с белым фоном.",
+      "error": null,
+      "latency_s": 0.7205515000096057
+    },
+    {
+      "id": 21,
+      "text": "Добавьте, пожалуйста, возможность сохранять список избранного",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Пользователь просит добавить функцию сохранения списка избранного.",
+      "error": null,
+      "latency_s": 3.0089266669820063
+    },
+    {
+      "id": 22,
+      "text": "Работаете ли вы в праздничные дни?",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Клиент интересуется режимом работы компании в праздничные дни.",
+      "error": null,
+      "latency_s": 1.8616481249919161
+    },
+    {
+      "id": 23,
+      "text": "Хочу предложить сотрудничество, с кем можно связаться?",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Пользователь интересуется возможностью сотрудничества и контактами для связи.",
+      "error": null,
+      "latency_s": 1.1853182920021936
+    },
+    {
+      "id": 24,
+      "text": "Вы классные, пользуюсь уже два года и всем советую",
+      "hard": false,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Клиент оставил положительный отзыв о сервисе.",
+      "error": null,
+      "latency_s": 0.8130478340026457
+    },
+    {
+      "id": 25,
+      "text": "не могу зайти, пишет нверный пороль, уже три раза сбрасывал",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в аккаунт из-за неверного пароля даже после его сброса.",
+      "error": null,
+      "latency_s": 0.8324625410023145
+    },
+    {
+      "id": 26,
+      "text": "ltymub cgbcfkb ldf hfpf pf jlby pfrfp",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "medium",
+      "summary": "Клиент сообщает о списании двойной оплаты за заказ.",
+      "error": null,
+      "latency_s": 0.7600844999833498
+    },
+    {
+      "id": 27,
+      "text": "zakaz ne priehal uzhe nedelyu, kur'er ne otvechaet na zvonki",
+      "hard": true,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Заказ не приехал уже неделю, и курьер не отвечает на звонки.",
+      "error": null,
+      "latency_s": 0.8730473339965101
+    },
+    {
+      "id": 28,
+      "text": "приложениезависаетнаэкранеоплатыикрутитсябесконечно",
+      "hard": true,
+      "expected_category": "technical",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Приложение зависает на экране оплаты и бесконечно загружается.",
+      "error": null,
+      "latency_s": 0.8164099580026232
+    },
+    {
+      "id": 29,
+      "text": "ВЕРНИТЕ ДЕНЬГИ!!! СПИСАЛИ ЗА ПОДПИСКУ КОТОРУЮ Я ОТМЕНИЛ!!!",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Пользователь требует возврата средств за списание по отмененной подписке.",
+      "error": null,
+      "latency_s": 0.8351738339988515
+    },
+    {
+      "id": 30,
+      "text": "щас не могу войти ваще, смс не приходит, помогите плз",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в систему, так как не приходит СМС с подтверждением.",
+      "error": null,
+      "latency_s": 1.0157912500144448
+    },
+    {
+      "id": 31,
+      "text": "Сәлеметсіз бе, заказ әлі келмеді, қашан доставка болады?",
+      "hard": true,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "medium",
+      "summary": "Клиент интересуется сроками доставки своего заказа.",
+      "error": null,
+      "latency_s": 0.7851977920217905
+    },
+    {
+      "id": 32,
+      "text": "payment failed но деньги списались, plz chek",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "high",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Оплата не прошла, но деньги были списаны со счета.",
+      "error": null,
+      "latency_s": 0.7403331660025287
+    },
+    {
+      "id": 33,
+      "text": "не рабоатет",
+      "hard": true,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "medium",
+      "summary": "Пользователь сообщил о том, что ничего не работает.",
+      "error": null,
+      "latency_s": 0.8733361670165323
+    },
+    {
+      "id": 34,
+      "text": "забыл пороль",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "medium",
+      "predicted_category": "auth",
+      "predicted_urgency": "medium",
+      "summary": "Пользователь забыл пароль от учетной записи.",
+      "error": null,
+      "latency_s": 1.0827330000174697
+    },
+    {
+      "id": 35,
+      "text": "оплта не прошла, а заказ всё равно оформился — с меня потом спишут?",
+      "hard": true,
+      "expected_category": "payment",
+      "expected_urgency": "medium",
+      "predicted_category": "payment",
+      "predicted_urgency": "high",
+      "summary": "Не прошла оплата при оформлении заказа, клиент беспокоится о возможном списании средств.",
+      "error": null,
+      "latency_s": 19.1380210420175
+    },
+    {
+      "id": 36,
+      "text": "Отличный сервис: третий раз ввожу код из смс и третий раз «неверный код». Браво.",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Не удается войти в аккаунт из-за ошибки при вводе кода из СМС.",
+      "error": null,
+      "latency_s": 36.4672005000175
+    },
+    {
+      "id": 37,
+      "text": "Спасибо курьеру Ержану, очень вежливый и быстрый!",
+      "hard": true,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "delivery",
+      "predicted_urgency": "low",
+      "summary": "Клиент выразил благодарность вежливому и быстрому курьеру Ержану.",
+      "error": null,
+      "latency_s": 4.89433837501565
+    },
+    {
+      "id": 38,
+      "text": "Здравствуйте. Пишу уже не первый раз, прошлые обращения остались без ответа. Две недели назад я оформил заказ на кухонный комбайн, оплатил сразу картой, всё прошло нормально, чек пришёл. Потом в приложении статус поменялся на «в пути», и с тех пор ничего не происходит. Трек-номер на сайте перевозчика не находится, в чате поддержки отвечает только бот. Я не прошу ничего особенного, просто скажите, где мой заказ и когда его привезут.",
+      "hard": true,
+      "expected_category": "delivery",
+      "expected_urgency": "medium",
+      "predicted_category": "delivery",
+      "predicted_urgency": "high",
+      "summary": "Заказ оплачен две недели назад и завис в статусе в пути без возможности отследить.",
+      "error": null,
+      "latency_s": 4.022276666975813
+    },
+    {
+      "id": 39,
+      "text": "сайт выдаёт ошибку при попытке сохранить адрес доставки, пишет что-то про сервер",
+      "hard": true,
+      "expected_category": "technical",
+      "expected_urgency": "medium",
+      "predicted_category": "technical",
+      "predicted_urgency": "medium",
+      "summary": "Сайт выдает ошибку сервера при попытке сохранить адрес доставки.",
+      "error": null,
+      "latency_s": 0.8512275840039365
+    },
+    {
+      "id": 40,
+      "text": "cant login to my acount, forgot pasword and reset email never comes",
+      "hard": true,
+      "expected_category": "auth",
+      "expected_urgency": "high",
+      "predicted_category": "auth",
+      "predicted_urgency": "high",
+      "summary": "Пользователь не может войти в аккаунт, так как письмо для сброса пароля не приходит.",
+      "error": null,
+      "latency_s": 1.1194187910004985
+    },
+    {
+      "id": 41,
+      "text": "а у вас есть вакансии? хочу рабоать курьером",
+      "hard": true,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Пользователь интересуется наличием вакансий курьера.",
+      "error": null,
+      "latency_s": 1.1730567080085166
+    },
+    {
+      "id": 42,
+      "text": "cgfcb,j",
+      "hard": true,
+      "expected_category": "other",
+      "expected_urgency": "low",
+      "predicted_category": "other",
+      "predicted_urgency": "low",
+      "summary": "Клиент отправил бессмысленный набор символов.",
+      "error": null,
+      "latency_s": 0.856888375012204
+    }
+  ]
+}
