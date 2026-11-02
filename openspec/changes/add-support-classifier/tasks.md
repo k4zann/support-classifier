@@ -6,10 +6,10 @@
 
 ## 2. Classify happy path with structured output
 
-- [ ] 2.1 Add `app/config.py` (Settings from `.env`) and `.env.example` listing all variables without values. Pick the default Gemini model from Google's current model list. Verify: a test shows that a missing `GEMINI_API_KEY` fails with a message naming it
-- [ ] 2.2 Add `prompts/classify.md`, loaded once at startup. Verify: a test shows startup fails with a message naming the file when it is missing or empty
-- [ ] 2.3 Write a failing endpoint test: `POST /classify` with a fake classifier (dependency override) returns 200 with exactly `category`, `urgency`, `summary`. Then add `app/schemas.py` (enums, request/response, `ModelOutput`) and the route. Verify: the test passes
-- [ ] 2.4 Write a failing test for `Classifier` with an injected fake Gemini client: it sends `response_schema=ModelOutput`, `response_mime_type="application/json"`, the configured model and temperature, and returns a `ClassifyResponse`. Then implement `app/classifier.py`. Verify: the test passes
+- [x] 2.1 Add `app/config.py` (Settings from `.env`) and `.env.example` listing all variables without values. Pick the default Gemini model from Google's current model list. Verify: a test shows that a missing `GEMINI_API_KEY` fails with a message naming it
+- [x] 2.2 Add `prompts/classify.md`, loaded once at startup. Verify: a test shows startup fails with a message naming the file when it is missing or empty
+- [x] 2.3 Write a failing endpoint test: `POST /classify` with a fake classifier (dependency override) returns 200 with exactly `category`, `urgency`, `summary`. Then add `app/schemas.py` (enums, request/response, `ModelOutput`) and the route. Verify: the test passes
+- [x] 2.4 Write a failing test for `Classifier` with an injected fake Gemini client: it sends `response_schema=ModelOutput`, `response_mime_type="application/json"`, the configured model and temperature, and returns a `ClassifyResponse`. Then implement `app/classifier.py`. Verify: the test passes
 - [ ] 2.5 Smoke-test against the real Gemini API with a local `.env` (manual, needs the student's key). Verify: `curl -X POST /classify` with the spec's SMS example returns a valid classification
 
 ## 3. Input validation errors (422)
