@@ -41,7 +41,7 @@
 
 ## 8. Batch endpoint (bonus)
 
-- [ ] 8.1 Write failing endpoint tests with a fake classifier: 3 texts → 3 results in order; a failing middle item → `{"error": ...}` in place while the others succeed; `[]`, 51 items and one invalid item → 422 with no calls; with concurrency 5 and 50 items, the fake records ≤5 in flight. Then implement `BatchRequest`/`BatchItem` and the `POST /classify/batch` route with a semaphore. Verify: tests pass
+- [x] 8.1 Write failing endpoint tests with a fake classifier: 3 texts → 3 results in order; a failing middle item → `{"error": ...}` in place while the others succeed; `[]`, 51 items and one invalid item → 422 with no calls; with concurrency 5 and 50 items, the fake records ≤5 in flight. Then implement `BatchRequest`/`BatchItem` and the `POST /classify/batch` route with a semaphore. Verify: tests pass
 
 ## 9. Docker (bonus)
 

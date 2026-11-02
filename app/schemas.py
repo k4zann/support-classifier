@@ -25,7 +25,7 @@ def _not_blank(text: str) -> str:
     return text
 
 
-# Shared by ClassifyRequest and, later, each item of BatchRequest.
+# Shared by ClassifyRequest and each item of BatchRequest.
 # The 4000-character limit applies to the text as sent, before any stripping.
 SupportText = Annotated[str, Field(max_length=4000), AfterValidator(_not_blank)]
 
@@ -38,6 +38,21 @@ class ClassifyResponse(BaseModel):
     category: Category
     urgency: Urgency
     summary: str = Field(min_length=1, max_length=150)
+
+
+class BatchRequest(BaseModel):
+    texts: list[SupportText] = Field(min_length=1, max_length=50)
+
+
+class BatchError(BaseModel):
+    error: str
+
+
+BatchItem = ClassifyResponse | BatchError
+
+
+class BatchResponse(BaseModel):
+    results: list[BatchItem]
 
 
 class ModelOutput(BaseModel):

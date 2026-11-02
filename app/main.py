@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -9,7 +10,14 @@ from google import genai
 
 from app.classifier import Classifier, ClassifierError
 from app.config import Settings, load_prompt
-from app.schemas import ClassifyRequest, ClassifyResponse
+from app.schemas import (
+    BatchError,
+    BatchItem,
+    BatchRequest,
+    BatchResponse,
+    ClassifyRequest,
+    ClassifyResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +25,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = Settings()
+    app.state.settings = settings
     prompt = load_prompt(settings.prompt_path)
     client = genai.Client(api_key=settings.gemini_api_key)
     app.state.classifier = Classifier(client, prompt, settings)
@@ -41,6 +50,10 @@ def get_classifier(request: Request) -> Classifier:
     return request.app.state.classifier
 
 
+def get_settings(request: Request) -> Settings:
+    return request.app.state.settings
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -51,3 +64,25 @@ async def classify(
     body: ClassifyRequest, classifier: Annotated[Classifier, Depends(get_classifier)]
 ) -> ClassifyResponse:
     return await classifier.classify(body.text)
+
+
+@app.post("/classify/batch")
+async def classify_batch(
+    body: BatchRequest,
+    classifier: Annotated[Classifier, Depends(get_classifier)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> BatchResponse:
+    semaphore = asyncio.Semaphore(settings.batch_concurrency)
+
+    async def classify_one(text: str) -> BatchItem:
+        async with semaphore:
+            try:
+                return await classifier.classify(text)
+            except ClassifierError as exc:
+                # Same contract as the 502 handler: log the cause, return fixed text.
+                logger.error("classification failed", exc_info=exc)
+                return BatchError(error="classification failed")
+
+    # gather keeps the input order; per-item errors never fail the whole batch.
+    results = await asyncio.gather(*(classify_one(text) for text in body.texts))
+    return BatchResponse(results=list(results))

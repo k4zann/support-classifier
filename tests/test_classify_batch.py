@@ -1,0 +1,120 @@
+import asyncio
+import logging
+from collections.abc import Iterator
+
+import pytest
+from fastapi.testclient import TestClient
+
+from app.classifier import ClassifierError
+from app.config import Settings
+from app.main import app, get_classifier, get_settings
+from app.schemas import Category, ClassifyResponse, Urgency
+
+PROVIDER_TEXT = "503 UNAVAILABLE: generativelanguage.googleapis.com key=AIza-secret"
+
+
+class FakeClassifier:
+    """Echoes the text as the summary; raises for texts in `fail_on`.
+
+    Tracks how many calls are in flight, to check the concurrency limit.
+    """
+
+    def __init__(self, fail_on: tuple[str, ...] = ()) -> None:
+        self.fail_on = fail_on
+        self.texts: list[str] = []
+        self.in_flight = 0
+        self.max_in_flight = 0
+
+    async def classify(self, text: str) -> ClassifyResponse:
+        self.texts.append(text)
+        self.in_flight += 1
+        self.max_in_flight = max(self.max_in_flight, self.in_flight)
+        try:
+            await asyncio.sleep(0.01)
+            if text in self.fail_on:
+                raise ClassifierError(PROVIDER_TEXT)
+            return ClassifyResponse(
+                category=Category.other, urgency=Urgency.low, summary=text
+            )
+        finally:
+            self.in_flight -= 1
+
+
+def use(fake: FakeClassifier) -> None:
+    app.dependency_overrides[get_classifier] = lambda: fake
+    app.dependency_overrides[get_settings] = lambda: Settings(
+        _env_file=None, GEMINI_API_KEY="test", batch_concurrency=5
+    )
+
+
+@pytest.fixture(autouse=True)
+def clear_overrides() -> Iterator[None]:
+    yield
+    app.dependency_overrides.clear()
+
+
+def item(text: str) -> dict[str, str]:
+    return {"category": "other", "urgency": "low", "summary": text}
+
+
+def test_batch_returns_results_in_input_order() -> None:
+    fake = FakeClassifier()
+    use(fake)
+    client = TestClient(app)
+
+    response = client.post("/classify/batch", json={"texts": ["один", "два", "три"]})
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "results": [item("один"), item("два"), item("три")]
+    }
+
+
+def test_batch_failed_item_holds_error_others_succeed(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    fake = FakeClassifier(fail_on=("два",))
+    use(fake)
+    client = TestClient(app)
+
+    with caplog.at_level(logging.ERROR):
+        response = client.post(
+            "/classify/batch", json={"texts": ["один", "два", "три"]}
+        )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "results": [item("один"), {"error": "classification failed"}, item("три")]
+    }
+    assert PROVIDER_TEXT not in response.text
+    assert PROVIDER_TEXT in caplog.text
+
+
+@pytest.mark.parametrize(
+    "texts",
+    [[], ["текст"] * 51, ["ok text", ""], ["ok text", "   \n "]],
+    ids=["empty-list", "51-items", "empty-item", "whitespace-item"],
+)
+def test_batch_rejects_invalid_request_without_calls(texts: list[str]) -> None:
+    fake = FakeClassifier()
+    use(fake)
+    client = TestClient(app)
+
+    response = client.post("/classify/batch", json={"texts": texts})
+
+    assert response.status_code == 422
+    assert fake.texts == []
+
+
+def test_batch_limits_concurrent_calls() -> None:
+    fake = FakeClassifier()
+    use(fake)
+    client = TestClient(app)
+    texts = [f"текст {i}" for i in range(50)]
+
+    response = client.post("/classify/batch", json={"texts": texts})
+
+    assert response.status_code == 200
+    assert [r["summary"] for r in response.json()["results"]] == texts
+    assert len(fake.texts) == 50
+    assert 1 < fake.max_in_flight <= 5
