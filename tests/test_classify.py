@@ -1,12 +1,16 @@
 import logging
 from collections.abc import Iterator
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
+from google.genai import errors
 
-from app.classifier import ClassifierError
+from app.classifier import Classifier, ClassifierError
+from app.config import Settings
 from app.main import app, get_classifier
 from app.schemas import Category, ClassifyResponse, Urgency
+from tests.fakes import VALID_RESPONSE, FakeModels, api_error, fake_client
 
 SMS_TEXT = "Не приходит код из SMS, третий день не могу войти в приложение"
 
@@ -106,3 +110,61 @@ def test_classify_maps_classifier_error_to_502(
     assert response.json() == {"detail": "classification failed"}
     assert PROVIDER_TEXT not in response.text
     assert PROVIDER_TEXT in caplog.text
+
+
+def use_real_classifier(models: FakeModels) -> None:
+    # The real Classifier (retries, error chaining) around a fake Gemini client.
+    settings = Settings(_env_file=None, GEMINI_API_KEY="test-key", max_retries=3)
+    classifier = Classifier(fake_client(models), "prompt", settings)
+    app.dependency_overrides[get_classifier] = lambda: classifier
+
+
+@pytest.mark.usefixtures("no_backoff")
+@pytest.mark.parametrize(
+    "error",
+    [
+        api_error(errors.ServerError, 503, "UNAVAILABLE"),
+        httpx.ConnectError("provider says no"),
+    ],
+    ids=["503", "connect-error"],
+)
+def test_classify_returns_502_when_model_stays_unavailable(
+    error: Exception, caplog: pytest.LogCaptureFixture
+) -> None:
+    models = FakeModels(error)
+    use_real_classifier(models)
+    client = TestClient(app)
+
+    try:
+        with caplog.at_level(logging.ERROR):
+            response = client.post("/classify", json={"text": SMS_TEXT})
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "classification failed"}
+    assert len(models.calls) == 3
+    assert "provider says no" not in response.text
+    assert "provider says no" in caplog.text
+
+
+@pytest.mark.usefixtures("no_backoff")
+def test_classify_returns_200_after_rate_limit_then_success() -> None:
+    models = FakeModels(
+        api_error(errors.ClientError, 429, "RESOURCE_EXHAUSTED"), VALID_RESPONSE
+    )
+    use_real_classifier(models)
+    client = TestClient(app)
+
+    try:
+        response = client.post("/classify", json={"text": SMS_TEXT})
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "category": "auth",
+        "urgency": "high",
+        "summary": "Не приходит SMS-код.",
+    }
+    assert len(models.calls) == 2

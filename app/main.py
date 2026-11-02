@@ -6,9 +6,8 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
-from google import genai
 
-from app.classifier import Classifier, ClassifierError
+from app.classifier import Classifier, ClassifierError, build_client
 from app.config import Settings, load_prompt
 from app.schemas import (
     BatchError,
@@ -27,9 +26,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = Settings()
     app.state.settings = settings
     prompt = load_prompt(settings.prompt_path)
-    client = genai.Client(api_key=settings.gemini_api_key)
+    client = build_client(settings)
     app.state.classifier = Classifier(client, prompt, settings)
     yield
+    await client.aio.aclose()
 
 
 app = FastAPI(title="Support classifier", lifespan=lifespan)

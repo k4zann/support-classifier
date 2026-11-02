@@ -2,13 +2,15 @@ import asyncio
 import logging
 from collections.abc import Iterator
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from app.classifier import ClassifierError
+from app.classifier import Classifier, ClassifierError
 from app.config import Settings
 from app.main import app, get_classifier, get_settings
 from app.schemas import Category, ClassifyResponse, Urgency
+from tests.fakes import FakeModels, fake_client
 
 PROVIDER_TEXT = "503 UNAVAILABLE: generativelanguage.googleapis.com key=AIza-secret"
 
@@ -118,3 +120,29 @@ def test_batch_limits_concurrent_calls() -> None:
     assert [r["summary"] for r in response.json()["results"]] == texts
     assert len(fake.texts) == 50
     assert 1 < fake.max_in_flight <= 5
+
+
+@pytest.mark.usefixtures("no_backoff")
+def test_batch_connection_errors_become_per_item_errors(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    # The real Classifier around a fake Gemini client that cannot connect.
+    settings = Settings(_env_file=None, GEMINI_API_KEY="test", max_retries=3)
+    models = FakeModels(httpx.ConnectError("provider says no"))
+    classifier = Classifier(fake_client(models), "prompt", settings)
+    app.dependency_overrides[get_classifier] = lambda: classifier
+    app.dependency_overrides[get_settings] = lambda: settings
+    client = TestClient(app)
+
+    with caplog.at_level(logging.ERROR):
+        response = client.post("/classify/batch", json={"texts": ["один", "два"]})
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "results": [
+            {"error": "classification failed"},
+            {"error": "classification failed"},
+        ]
+    }
+    assert "provider says no" not in response.text
+    assert "provider says no" in caplog.text

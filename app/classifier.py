@@ -4,6 +4,7 @@ import random
 from typing import Any
 
 import httpx
+from google import genai
 from google.genai import errors, types
 from pydantic import ValidationError
 
@@ -25,10 +26,18 @@ def backoff_delay(attempt: int) -> float:
 
 
 def is_transient(exc: Exception) -> bool:
-    # Rate limit, server errors and timeouts may pass on retry; other 4xx won't.
+    # Rate limit, server errors, timeouts and connection errors may pass on retry;
+    # other 4xx won't.
     if isinstance(exc, errors.APIError):
         return exc.code == 429 or exc.code >= 500
     return True
+
+
+def build_client(settings: Settings) -> genai.Client:
+    """The Gemini client, built the same way for the service and the eval runner."""
+    # google-genai sets no client timeout by default; HttpOptions.timeout is in ms.
+    http_options = types.HttpOptions(timeout=int(settings.request_timeout_s * 1000))
+    return genai.Client(api_key=settings.gemini_api_key, http_options=http_options)
 
 
 def trim_summary(summary: str) -> str:
@@ -85,7 +94,9 @@ class Classifier:
                     model=self.settings.gemini_model, contents=text, config=config
                 )
                 break
-            except (errors.APIError, httpx.TimeoutException, TimeoutError) as exc:
+            # TransportError covers httpx timeouts and connection errors, which
+            # google-genai lets through unwrapped.
+            except (errors.APIError, httpx.TransportError, TimeoutError) as exc:
                 if not is_transient(exc) or attempt == self.settings.max_retries:
                     raise ClassifierError("model call failed") from exc
                 await asyncio.sleep(backoff_delay(attempt))

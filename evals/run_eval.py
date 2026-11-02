@@ -17,9 +17,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
-from google import genai
-
-from app.classifier import Classifier
+from app.classifier import Classifier, build_client
 from app.config import Settings, load_prompt
 from app.schemas import Category, ClassifyResponse
 from evals.validate_dataset import DATASET_PATH, load_rows, validate
@@ -195,8 +193,7 @@ def build_settings(args: argparse.Namespace) -> Settings:
 def build_classifier(settings: Settings) -> Classifier:
     """The real classifier, the same one the service uses."""
     prompt = load_prompt(settings.prompt_path)
-    client = genai.Client(api_key=settings.gemini_api_key)
-    return Classifier(client, prompt, settings)
+    return Classifier(build_client(settings), prompt, settings)
 
 
 def save_result(results_dir: Path, started: datetime, result: dict) -> Path:

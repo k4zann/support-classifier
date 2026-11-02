@@ -10,32 +10,12 @@ from google.genai import errors
 from app.classifier import Classifier, ClassifierError
 from app.config import Settings
 from app.schemas import Category, ClassifyResponse, ModelOutput, Urgency
+from tests.fakes import VALID_RESPONSE, FakeModels, api_error, fake_client
 
 SMS_TEXT = "Не приходит код из SMS, третий день не могу войти в приложение"
 PROMPT = "You classify support requests."
 
-
-class FakeModels:
-    """Mimics `client.aio.models` of google-genai and records each call.
-
-    Each call takes the next outcome (the last one repeats); an exception
-    outcome is raised instead of returned.
-    """
-
-    def __init__(self, *outcomes: Any) -> None:
-        self.outcomes = outcomes
-        self.calls: list[dict[str, Any]] = []
-
-    async def generate_content(self, *, model: str, contents: Any, config: Any) -> Any:
-        self.calls.append({"model": model, "contents": contents, "config": config})
-        outcome = self.outcomes[min(len(self.calls), len(self.outcomes)) - 1]
-        if isinstance(outcome, Exception):
-            raise outcome
-        return outcome
-
-
-def fake_client(models: FakeModels) -> Any:
-    return SimpleNamespace(aio=SimpleNamespace(models=models))
+pytestmark = pytest.mark.usefixtures("no_backoff")
 
 
 def make_settings() -> Settings:
@@ -46,24 +26,6 @@ def make_settings() -> Settings:
         temperature=0.3,
         max_retries=3,
     )
-
-
-@pytest.fixture(autouse=True)
-def no_backoff(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Retry tests must not actually wait between attempts.
-    monkeypatch.setattr("app.classifier.backoff_delay", lambda attempt: 0.0)
-
-
-def api_error(cls: type[errors.APIError], code: int, status: str) -> errors.APIError:
-    # Same constructor the SDK uses in APIError.raise_error().
-    body = {"error": {"code": code, "message": "provider says no", "status": status}}
-    return cls(code, body)
-
-
-VALID_RESPONSE = SimpleNamespace(
-    parsed=None,
-    text='{"category": "auth", "urgency": "high", "summary": "Не приходит SMS-код."}',
-)
 
 
 def test_classify_sends_structured_output_request_and_returns_response() -> None:
@@ -137,6 +99,18 @@ def test_classify_gives_up_after_max_retries_on_server_errors() -> None:
     # The message is safe to show to clients: no provider text in it.
     assert "provider says no" not in str(exc_info.value)
     assert "UNAVAILABLE" not in str(exc_info.value)
+
+
+def test_classify_retries_connection_errors_then_gives_up() -> None:
+    # The SDK lets httpx transport errors (refused, reset, DNS...) through as is.
+    models = FakeModels(httpx.ConnectError("connection refused"))
+    classifier = Classifier(fake_client(models), PROMPT, make_settings())
+
+    with pytest.raises(ClassifierError) as exc_info:
+        asyncio.run(classifier.classify(SMS_TEXT))
+
+    assert len(models.calls) == 3
+    assert isinstance(exc_info.value.__cause__, httpx.ConnectError)
 
 
 @pytest.mark.parametrize(

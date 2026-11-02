@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     max_retries: int = 3
     batch_concurrency: int = 5
     prompt_path: str = "prompts/classify.md"
+    # Per model call; without it a hung connection waits forever.
+    request_timeout_s: float = 30.0
 
 
 def load_prompt(path: str) -> str:

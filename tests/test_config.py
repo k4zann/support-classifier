@@ -13,6 +13,7 @@ ENV_VARS = [
     "MAX_RETRIES",
     "BATCH_CONCURRENCY",
     "PROMPT_PATH",
+    "REQUEST_TIMEOUT_S",
 ]
 
 
@@ -44,3 +45,4 @@ def test_env_example_with_only_key_set_uses_defaults(tmp_path: Path) -> None:
     assert settings.max_retries == 3
     assert settings.batch_concurrency == 5
     assert settings.prompt_path == "prompts/classify.md"
+    assert settings.request_timeout_s == 30.0

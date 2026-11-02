@@ -26,10 +26,10 @@ Constraints that shape the design:
 - *Alternative:* the `src/support_classifier` layout that uv generates. Rejected because it breaks the required uvicorn command and the recommended structure.
 
 ### Modules
-- `app/config.py`: `Settings` built on `pydantic-settings`, reading `.env`. Fields: `gemini_api_key` (required), `gemini_model`, `temperature=0.0`, `max_retries=3`, `batch_concurrency=5`, `prompt_path="prompts/classify.md"`.
+- `app/config.py`: `Settings` built on `pydantic-settings`, reading `.env`. Fields: `gemini_api_key` (required), `gemini_model`, `temperature=0.0`, `max_retries=3`, `batch_concurrency=5`, `prompt_path="prompts/classify.md"`, `request_timeout_s=30` (passed to the Gemini client, which has no timeout by default).
 - `app/schemas.py`: `Category` and `Urgency` as `str` Enums, `ClassifyRequest` (text validated: stripped non-empty, ≤4000 characters), `ClassifyResponse` (summary ≤150 characters), `BatchRequest` (1–50 `texts`, each checked by the same validator), `BatchItem` (result or error), and `ModelOutput`, the schema sent to Gemini (see below).
 - `app/classifier.py`: a `Classifier` class holding the Gemini async client, the loaded prompt and the settings. Its public method is `async classify(text) -> ClassifyResponse`, which raises `ClassifierError` on final failure. It also contains the retry loop and the summary trimming.
-- `app/main.py`: the FastAPI app. A lifespan handler builds the `Classifier` once (failing fast on a missing key or prompt). The routes depend on `get_classifier()`, and a `ClassifierError` becomes a 502.
+- `app/main.py`: the FastAPI app. A lifespan handler builds the `Classifier` once (failing fast on a missing key or prompt) and closes the Gemini client at shutdown. The routes depend on `get_classifier()`, and a `ClassifierError` becomes a 502.
 
 ### Model seam for tests: FastAPI dependency override of `get_classifier`
 Tests swap in a fake classifier object with the same `classify()` method, through `app.dependency_overrides`. This replaces only the external boundary (the LLM). Request validation, error mapping, batch ordering and concurrency all run for real.
@@ -41,7 +41,7 @@ The call uses `response_mime_type="application/json"` and `response_schema=Model
 - *Alternative:* putting `maxLength=150` in the schema and failing on violations. Rejected because of the grill decision to trim and keep the classification.
 
 ### Retries: small hand-written loop, no new dependency
-Up to `max_retries` attempts with exponential backoff plus jitter (1s, 2s, 4s…). It retries on `google.genai.errors.APIError` with code 429 or ≥500, and on timeouts. Invalid output and 4xx errors other than 429 are not retried. About 15 lines, easy to explain.
+Up to `max_retries` attempts with exponential backoff plus jitter (1s, 2s, 4s…). It retries on `google.genai.errors.APIError` with code 429 or ≥500, and on timeouts and connection errors (`httpx.TransportError`, which google-genai lets through unwrapped). Invalid output and 4xx errors other than 429 are not retried. About 15 lines, easy to explain.
 - *Alternative:* `tenacity`. Rejected as an extra dependency for one loop.
 
 ### Batch: `asyncio.gather` under an `asyncio.Semaphore(batch_concurrency)`
