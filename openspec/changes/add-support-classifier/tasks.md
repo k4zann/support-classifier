@@ -24,7 +24,7 @@
 
 ## 5. Eval harness: dataset validation
 
-- [ ] 5.1 Write failing tests for `evals/validate_dataset.py` using small temp JSONL files: valid set passes and reports counts; <30 rows, a category <4, <8 hard, duplicate id, bad JSON line, bad label and a v3 few-shot text present in the dataset each produce a named violation. Then implement it plus its `__main__`. Verify: tests pass, and `uv run python -m evals.validate_dataset` prints counts or violations
+- [x] 5.1 Write failing tests for `evals/validate_dataset.py` using small temp JSONL files: valid set passes and reports counts; <30 rows, a category <4, <8 hard, duplicate id, bad JSON line, bad label and a v3 few-shot text present in the dataset each produce a named violation. Then implement it plus its `__main__`. Verify: tests pass, and `uv run python -m evals.validate_dataset` prints counts or violations
 - [ ] 5.2 Student task: write and label `evals/dataset.jsonl` by hand (30+ rows, ≥4 per category, ≥8 `hard`) before any model run. Verify: `uv run python -m evals.validate_dataset` passes
 
 ## 6. Eval harness: runner, metrics and saved results
