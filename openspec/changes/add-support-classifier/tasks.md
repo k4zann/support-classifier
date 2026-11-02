@@ -53,6 +53,6 @@
 
 ## 11. README and final checks
 
-- [ ] 11.1 Write the README: setup in 3–4 commands (local and Docker), model and provider choice with reasons, final metrics, the iteration log table filled from result files, the model comparison, and placeholders for the student's error analysis (3–5 errors) and honest conclusion. Verify: every number in the README matches a file in `evals/results/`
+- [x] 11.1 Write the README: setup in 3–4 commands (local and Docker), model and provider choice with reasons, final metrics, the iteration log table filled from result files, the model comparison, and placeholders for the student's error analysis (3–5 errors) and honest conclusion. Verify: every number in the README matches a file in `evals/results/`
 - [ ] 11.2 Student task: write the error analysis and the conclusion in the README
 - [ ] 11.3 Final check: `uv run ruff check .` and `uv run pytest` pass; a fresh clone works with `cp .env.example .env` + key, then `uv sync` and `uv run uvicorn app.main:app`; `git log -p | grep -i "api_key="` shows no secret. Verify: all commands succeed
