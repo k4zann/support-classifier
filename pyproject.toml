@@ -1,0 +1,29 @@
+[project]
+name = "support-classifier"
+version = "0.1.0"
+description = "LLM classifier for customer support requests"
+readme = "README.md"
+authors = [
+    { name = "Arshat", email = "a.aitkozha@mystartups.kz" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.162.0",
+    "google-genai>=2.34.0",
+    "pydantic-settings>=2.16.2",
+    "uvicorn>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
+
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
