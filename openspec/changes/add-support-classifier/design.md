@@ -53,7 +53,7 @@ Each item runs `classify()` inside the semaphore. A `ClassifierError` becomes `{
 - The result file stores token usage from `usage_metadata` when present. Cost for the model comparison is worked out in the README from the stored token counts and the provider's published prices, which are not hard-coded.
 
 ### Model names
-The default model in `.env.example` and the comparison model are picked during apply from Google's current Gemini model list (a Flash-class default and a Flash-Lite-class comparison, both with free-tier access), not from memory. They live only in config.
+The default model in `.env.example` and the comparison model are picked during apply from Google's current Gemini model list (a Flash-Lite-class default, the same model the evals ran on, and another Flash-Lite-class comparison, both with free-tier access), not from memory. They live only in config.
 
 ### Docker
 A multi-stage-free single stage: `python:3.12-slim`, the `uv` binary copied from the official `ghcr.io/astral-sh/uv` image, then `uv sync --frozen --no-dev`, and finally `uv run uvicorn app.main:app --host 0.0.0.0 --port 8000`. `.dockerignore` excludes `.env`, `.venv`, `.git`, `evals/results`. The compose file uses `env_file: .env` and maps port `8000:8000`.

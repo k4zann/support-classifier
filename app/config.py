@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Alias so the "missing field" error names the env variable to set.
     gemini_api_key: str = Field(validation_alias="GEMINI_API_KEY")
-    gemini_model: str = "gemini-3.5-flash"
+    gemini_model: str = "gemini-3.5-flash-lite"
     temperature: float = 0.0
     max_retries: int = 3
     batch_concurrency: int = 5

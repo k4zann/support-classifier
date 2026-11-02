@@ -34,7 +34,7 @@ curl -X POST localhost:8000/classify -H 'Content-Type: application/json' \
 docker compose up --build
 ```
 
-Настройки (`.env`, пустые значения = значения по умолчанию из `app/config.py`): `GEMINI_MODEL`, `TEMPERATURE` (по умолчанию 0), `MAX_RETRIES` (по умолчанию 3), `BATCH_CONCURRENCY` (по умолчанию 5), `PROMPT_PATH` (по умолчанию `prompts/classify.md`).
+Настройки (`.env`, пустые значения = значения по умолчанию из `app/config.py`): `GEMINI_MODEL` (по умолчанию `gemini-3.5-flash-lite`), `TEMPERATURE` (по умолчанию 0), `MAX_RETRIES` (по умолчанию 3), `BATCH_CONCURRENCY` (по умолчанию 5), `PROMPT_PATH` (по умолчанию `prompts/classify.md`).
 
 Тесты и линтер (модель в тестах замокана, реальных вызовов нет):
 
@@ -60,9 +60,9 @@ MAX_RETRIES=7 uv run python -m evals.run_eval --prompt prompts/versions/v3.md --
 - structured output: схема ответа передаётся как `response_schema=ModelOutput` (Pydantic-модель), `category` и `urgency` — Enum, парсинга регулярками нет;
 - temperature 0, как рекомендует задание.
 
-**Модель для eval — `gemini-3.5-flash-lite`.** Все итерации промпта прогонялись на ней, и все метрики ниже относятся к ней. Причина — лимиты бесплатного тарифа: прогон набора — это 42 запроса, а у gemini-3.5-flash и gemini-3.6-flash на бесплатном тарифе лимит 20 запросов в день (в ошибке квоты для обеих указана модель gemini-3.6-flash; `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, `quotaValue: 20` в `2026-11-02_17-45-49.json` и `2026-11-02_18-29-23.json`). У gemini-3.5-flash-lite лимит 15 запросов в минуту (`quotaValue: 15` в `2026-11-02_17-51-14.json`), его можно переждать ретраями.
+**Модель — `gemini-3.5-flash-lite`, и в сервисе по умолчанию (`gemini_model` в `app/config.py`), и в eval.** Все итерации промпта прогонялись на ней, и все метрики ниже относятся к ней. Причина — лимиты бесплатного тарифа: прогон набора — это 42 запроса, а у gemini-3.5-flash и gemini-3.6-flash на бесплатном тарифе лимит 20 запросов в день (в ошибке квоты для обеих указана модель gemini-3.6-flash; `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, `quotaValue: 20` в `2026-11-02_17-45-49.json` и `2026-11-02_18-29-23.json`). У gemini-3.5-flash-lite лимит 15 запросов в минуту (`quotaValue: 15` в `2026-11-02_17-51-14.json`), его можно переждать ретраями.
 
-**Модель сервиса по умолчанию — `gemini-3.5-flash`** (`gemini_model` в `app/config.py`). Её выбрали при ручной проверке `/classify` (коммит `e68bcb7`): `gemini-3.8-flash` и `gemini-3.7-flash` на бесплатном ключе отвечали 504 DEADLINE_EXCEEDED, а `gemini-3.5-flash` ответила примерно за 2,5 с. На eval-наборе эта модель не измерена (см. выше). Чтобы сервис работал на той же модели, что измерена, укажите в `.env` `GEMINI_MODEL=gemini-3.5-flash-lite`.
+**Альтернатива — `gemini-3.5-flash`** (`GEMINI_MODEL=gemini-3.5-flash` в `.env`). При ручной проверке `/classify` (коммит `e68bcb7`) `gemini-3.8-flash` и `gemini-3.7-flash` на бесплатном ключе отвечали 504 DEADLINE_EXCEEDED, а `gemini-3.5-flash` ответила примерно за 2,5 с. Но на eval-наборе она не измерена (см. выше), а на бесплатном тарифе ей доступно только 20 запросов в день, поэтому по умолчанию стоит измеренная `gemini-3.5-flash-lite`.
 
 ## Итоговые метрики
 
