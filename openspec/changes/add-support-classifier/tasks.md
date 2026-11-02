@@ -35,7 +35,7 @@
 ## 7. Prompt versions and iterations
 
 - [x] 7.1 Draft `prompts/versions/v1.md` (basic instruction), copy it to `prompts/classify.md`, and run the eval. Verify: a result file exists for v1. Student commits the prompt change separately
-- [ ] 7.2 Draft `v2.md` (adds category and urgency descriptions from the spec), update `classify.md`, run the eval. Verify: a v2 result file exists. Student commits separately
+- [x] 7.2 Draft `v2.md` (adds category and urgency descriptions from the spec), update `classify.md`, run the eval. Verify: a v2 result file exists. Student commits separately
 - [ ] 7.3 Draft `v3.md` (adds 3 few-shot examples not in the dataset), update `classify.md`, run the eval. Verify: a v3 result file exists, and the validator's few-shot overlap check passes. Student commits separately
 - [ ] 7.4 Student task: inspect the errors from each run and decide on any further versions. If the dataset changes, re-run v1–v3 on it
 
