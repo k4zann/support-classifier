@@ -13,12 +13,13 @@ class Settings(BaseSettings):
     # Alias so the "missing field" error names the env variable to set.
     gemini_api_key: str = Field(validation_alias="GEMINI_API_KEY")
     gemini_model: str = "gemini-3.5-flash-lite"
-    temperature: float = 0.0
-    max_retries: int = 3
-    batch_concurrency: int = 5
+    # Bounds fail startup on a bad value instead of hanging or crashing per request.
+    temperature: float = Field(0.0, ge=0, le=2)  # Gemini's valid range
+    max_retries: int = Field(3, ge=1)
+    batch_concurrency: int = Field(5, ge=1)
     prompt_path: str = "prompts/classify.md"
     # Per model call; without it a hung connection waits forever.
-    request_timeout_s: float = 30.0
+    request_timeout_s: float = Field(30.0, gt=0)
 
 
 def load_prompt(path: str) -> str:

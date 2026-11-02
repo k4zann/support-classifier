@@ -34,7 +34,7 @@ curl -X POST localhost:8000/classify -H 'Content-Type: application/json' \
 docker compose up --build
 ```
 
-Настройки (`.env`, пустые значения = значения по умолчанию из `app/config.py`): `GEMINI_MODEL` (по умолчанию `gemini-3.5-flash-lite`), `TEMPERATURE` (по умолчанию 0), `MAX_RETRIES` (по умолчанию 3), `BATCH_CONCURRENCY` (по умолчанию 5), `PROMPT_PATH` (по умолчанию `prompts/classify.md`), `REQUEST_TIMEOUT_S` (таймаут одного запроса к модели в секундах, по умолчанию 30).
+Настройки (`.env`, пустые значения = значения по умолчанию из `app/config.py`): `GEMINI_MODEL` (по умолчанию `gemini-3.5-flash-lite`), `TEMPERATURE` (от 0 до 2, по умолчанию 0), `MAX_RETRIES` (не меньше 1, по умолчанию 3), `BATCH_CONCURRENCY` (не меньше 1, по умолчанию 5), `PROMPT_PATH` (по умолчанию `prompts/classify.md`), `REQUEST_TIMEOUT_S` (таймаут одного запроса к модели в секундах, больше 0, по умолчанию 30). Значение вне диапазона останавливает запуск с ошибкой, в которой названо поле.
 
 Тесты и линтер (модель в тестах замокана, реальных вызовов нет):
 

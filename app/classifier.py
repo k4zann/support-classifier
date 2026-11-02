@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import random
+import re
 from typing import Any
 
 import httpx
@@ -41,14 +42,15 @@ def build_client(settings: Settings) -> genai.Client:
 
 
 def trim_summary(summary: str) -> str:
-    """Cut at the last word boundary within the limit, or hard-cut with no spaces."""
+    """Cut at the last word boundary within the limit, or hard-cut with no whitespace."""
     if len(summary) <= SUMMARY_MAX_LENGTH:
         return summary
     cut = summary[:SUMMARY_MAX_LENGTH]
     if not summary[SUMMARY_MAX_LENGTH].isspace():
-        head, space, _ = cut.rpartition(" ")
-        if space:
-            cut = head
+        # Any whitespace counts as a boundary: NBSP, tab and newline too.
+        boundary = re.search(r"\s\S*$", cut)
+        if boundary:
+            cut = cut[: boundary.start()]
     cut = cut.rstrip() or summary[:SUMMARY_MAX_LENGTH]
     # The eval harness counts trims by this message.
     logger.warning("summary trimmed from %d to %d characters", len(summary), len(cut))
@@ -108,7 +110,8 @@ class Classifier:
             if not isinstance(output, ModelOutput):
                 output = ModelOutput.model_validate_json(response.text or "")
             fields = output.model_dump()
-            fields["summary"] = trim_summary(output.summary)
+            # Stripped first, so a blank summary fails validation as invalid output.
+            fields["summary"] = trim_summary(output.summary.strip())
             return ClassifyResponse.model_validate(fields)
         except ValidationError as exc:
             raise ClassifierError("invalid model output") from exc

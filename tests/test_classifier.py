@@ -203,3 +203,32 @@ def test_classify_keeps_summary_at_limit_unchanged(
 
     assert result == summary
     assert trim_warnings(caplog) == []
+
+
+@pytest.mark.parametrize("summary", ["   ", "\n\t "], ids=["spaces", "mixed"])
+def test_classify_rejects_blank_summary_without_retry(summary: str) -> None:
+    models = FakeModels(summary_response(summary), VALID_RESPONSE)
+    classifier = Classifier(fake_client(models), PROMPT, make_settings())
+
+    with pytest.raises(ClassifierError):
+        asyncio.run(classifier.classify(SMS_TEXT))
+
+    assert len(models.calls) == 1
+
+
+def test_classify_strips_whitespace_around_summary() -> None:
+    assert classify_summary("  Не приходит код.\n") == "Не приходит код."
+
+
+@pytest.mark.parametrize("separator", [" ", "\n", "\t"], ids=["nbsp", "lf", "tab"])
+def test_classify_trims_summary_at_any_whitespace(separator: str) -> None:
+    words = ["Клиент", "не", "получает", "код", "из", "SMS", "уже"] * 8
+    summary = separator.join(words)
+    assert len(summary) > 150
+    assert not summary[149].isspace() and not summary[150].isspace()  # mid-word
+
+    result = classify_summary(summary)
+
+    assert len(result) <= 150
+    assert summary.startswith(result)
+    assert summary[len(result)] == separator  # the last word is whole
