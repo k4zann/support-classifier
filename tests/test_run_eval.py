@@ -2,16 +2,19 @@ import asyncio
 import hashlib
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from google.genai import errors
 
 from app.classifier import Classifier, ClassifierError
 from app.config import Settings
 from app.schemas import ClassifyResponse, ModelOutput
-from evals.run_eval import compute_metrics, evaluate, main
+from evals.run_eval import compute_metrics, evaluate, main, save_result
+from tests.fakes import api_error
 
 CATEGORIES = ["auth", "payment", "delivery", "technical", "other"]
 URGENCIES = ["high", "medium", "low"]
@@ -207,13 +210,23 @@ class FakeGeminiModels:
     its expected labels, reporting 10 prompt + 5 output + 2 thinking tokens.
 
     `overrides` maps a text to a different response `text` (e.g. bad JSON).
+    `rate_limited` maps a text to how many 429s it gets before an answer.
     """
 
-    def __init__(self, rows: list[dict], overrides: dict[str, str]) -> None:
+    def __init__(
+        self,
+        rows: list[dict],
+        overrides: dict[str, str],
+        rate_limited: dict[str, int] | None = None,
+    ) -> None:
         self.labels = {r["text"]: (r["category"], r["urgency"]) for r in rows}
         self.overrides = overrides
+        self.rate_limited = dict(rate_limited or {})
 
     async def generate_content(self, *, model: str, contents: Any, config: Any) -> Any:
+        if self.rate_limited.get(contents, 0) > 0:
+            self.rate_limited[contents] -= 1
+            raise api_error(errors.ClientError, 429, "RESOURCE_EXHAUSTED")
         usage = SimpleNamespace(
             prompt_token_count=10,
             candidates_token_count=5,
@@ -235,15 +248,21 @@ def read_single_result(results_dir: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@pytest.mark.usefixtures("no_backoff")
 def test_cli_saves_result_file_with_run_details(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setenv("MAX_RETRIES", "4")
+    monkeypatch.setenv("BATCH_CONCURRENCY", "2")
+    monkeypatch.setenv("REQUEST_TIMEOUT_S", "12.5")
     rows = make_dataset_rows()
     long_summary = json.dumps(
         {"category": "payment", "urgency": "medium", "summary": "слово " * 40}
     )
     models = FakeGeminiModels(
-        rows, {rows[1]["text"]: long_summary, rows[10]["text"]: "not json"}
+        rows,
+        {rows[1]["text"]: long_summary, rows[10]["text"]: "not json"},
+        rate_limited={rows[5]["text"]: 2},
     )
     client = SimpleNamespace(aio=SimpleNamespace(models=models))
     dataset = write_dataset(tmp_path, rows)
@@ -266,6 +285,10 @@ def test_cli_saves_result_file_with_run_details(
     assert result["dataset_sha256"] == dataset_hash
     assert result["dataset_rows"] == 30
     assert result["timestamp"]
+    # Run conditions as used, so latency can be told apart from 429 backoff.
+    assert result["max_retries"] == 4
+    assert result["batch_concurrency"] == 2
+    assert result["request_timeout_s"] == 12.5
     assert result["category_accuracy"] == {
         "correct": 29,
         "total": 30,
@@ -279,6 +302,8 @@ def test_cli_saves_result_file_with_run_details(
     assert [p["id"] for p in predictions] == list(range(30))
     assert predictions[1]["predicted_category"] == "payment"
     assert len(predictions[1]["summary"]) <= 150
+    # Row 5 got two 429s before its answer; the invalid-output row 10 is not retried.
+    assert [p["attempts"] for p in predictions] == [3 if i == 5 else 1 for i in range(30)]
     assert result["latency_s"]["total"] == pytest.approx(
         sum(p["latency_s"] for p in predictions)
     )
@@ -297,6 +322,73 @@ def test_cli_saves_result_file_with_run_details(
     assert str(results_dir) in out
     assert prompt_hash[:12] in out
     assert dataset_hash[:12] in out
+
+
+def test_hashes_describe_the_files_as_they_were_when_the_run_started(
+    tmp_path: Path,
+) -> None:
+    rows = make_dataset_rows()
+    dataset = write_dataset(tmp_path, rows)
+    prompt = tmp_path / "prompts" / "classify.md"
+    original_dataset_hash = hashlib.sha256(dataset.read_bytes()).hexdigest()
+
+    class EditingClassifier(FakeClassifier):
+        # Someone edits the prompt and the dataset while the run is going.
+        async def classify(self, text: str) -> ClassifyResponse:
+            prompt.write_text("edited prompt", encoding="utf-8")
+            dataset.write_text("edited dataset\n", encoding="utf-8")
+            return await super().classify(text)
+
+    fake = EditingClassifier({r["text"]: (r["category"], r["urgency"]) for r in rows})
+    results_dir = tmp_path / "results"
+
+    main(
+        ["--dataset", str(dataset)],
+        make_classifier=lambda settings: fake,
+        results_dir=results_dir,
+    )
+
+    result = read_single_result(results_dir)
+    assert result["prompt_sha256"] == hashlib.sha256(b"live prompt").hexdigest()
+    assert result["dataset_sha256"] == original_dataset_hash
+
+
+def test_second_run_with_the_same_timestamp_does_not_overwrite_the_first(
+    tmp_path: Path,
+) -> None:
+    started = datetime(2026, 11, 2, 18, 15, 17)
+    results_dir = tmp_path / "results"
+
+    first = save_result(results_dir, started, {"run": 1})
+    second = save_result(results_dir, started, {"run": 2})
+
+    assert first.name == "2026-11-02_18-15-17.json"
+    assert second.name == "2026-11-02_18-15-17_2.json"
+    assert json.loads(first.read_text(encoding="utf-8")) == {"run": 1}
+    assert json.loads(second.read_text(encoding="utf-8")) == {"run": 2}
+    assert sorted(p.name for p in results_dir.iterdir()) == [first.name, second.name]
+
+
+@pytest.mark.usefixtures("no_backoff")
+def test_result_file_counts_attempts_of_a_row_that_never_got_an_answer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("MAX_RETRIES", "4")
+    rows = make_dataset_rows()
+    models = FakeGeminiModels(rows, {}, rate_limited={rows[3]["text"]: 99})
+    client = SimpleNamespace(aio=SimpleNamespace(models=models))
+    results_dir = tmp_path / "results"
+
+    main(
+        ["--dataset", str(write_dataset(tmp_path, rows))],
+        make_classifier=lambda settings: Classifier(client, "prompt", settings),
+        results_dir=results_dir,
+    )
+
+    predictions = read_single_result(results_dir)["predictions"]
+    assert "model call failed" in predictions[3]["error"]
+    assert predictions[3]["attempts"] == 4
+    assert predictions[4]["attempts"] == 1
 
 
 def test_cli_flags_override_config_for_that_run_only(
@@ -352,5 +444,6 @@ def test_cli_flags_override_config_for_that_run_only(
     # Comparable runs: same dataset, different prompts.
     assert default_result["dataset_sha256"] == flags_result["dataset_sha256"]
     assert default_result["prompt_sha256"] != flags_result["prompt_sha256"]
-    # The fake classifier reports no token usage, so none is stored.
+    # The fake classifier reports no token usage or attempts, so none is stored.
     assert flags_result["token_usage"] is None
+    assert {p["attempts"] for p in flags_result["predictions"]} == {None}

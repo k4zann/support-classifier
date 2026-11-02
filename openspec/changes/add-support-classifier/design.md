@@ -45,11 +45,12 @@ Up to `max_retries` attempts with exponential backoff plus jitter (1s, 2s, 4s…
 - *Alternative:* `tenacity`. Rejected as an extra dependency for one loop.
 
 ### Batch: `asyncio.gather` under an `asyncio.Semaphore(batch_concurrency)`
-Each item runs `classify()` inside the semaphore. A `ClassifierError` becomes `{"error": "classification failed"}` for that item. `gather` keeps the input order.
+The lifespan creates one semaphore for the whole service (`app.state`), so parallel batch requests share the limit. Each item runs `classify()` inside the semaphore. A `ClassifierError` becomes `{"error": "classification failed"}` for that item. `gather` keeps the input order.
 
 ### Eval runner
 - `evals/validate_dataset.py`: `validate(path) -> list[str]` (violations) plus a `__main__` that prints counts. `run_eval` imports and calls it before doing anything else.
-- `evals/run_eval.py`: argparse (`--prompt`, `--model`, `--temperature`, `--dataset`). It builds a `Classifier` from `Settings` with the overrides applied and runs every row in a single `asyncio.run`, awaiting rows one by one. It catches `ClassifierError` (and any unexpected `Exception`) per row. It computes the metrics in plain Python (no pandas/sklearn), prints them as text tables, and writes `evals/results/<YYYY-MM-DD_HH-MM-SS>.json`. Prompt and dataset hashes are SHA-256 of the file bytes (the first 12 hex characters are shown).
+- `evals/run_eval.py`: argparse (`--prompt`, `--model`, `--temperature`, `--dataset`). It builds a `Classifier` from `Settings` with the overrides applied and runs every row in a single `asyncio.run`, awaiting rows one by one. It catches `ClassifierError` (and any unexpected `Exception`) per row. It computes the metrics in plain Python (no pandas/sklearn), prints them as text tables, and writes `evals/results/<YYYY-MM-DD_HH-MM-SS>.json` (a run started in the same second as an existing file gets `_2`, `_3`…; files are never overwritten). Prompt and dataset hashes are SHA-256 of the file bytes, read before classifying starts (the first 12 hex characters are shown).
+- The result file also stores the run conditions (`max_retries`, `batch_concurrency`, `request_timeout_s`) and, per row, the number of model calls (`attempts`, read from `Classifier.last_attempts`), so latency can be told apart from retry backoff.
 - The result file stores token usage from `usage_metadata` when present. Cost for the model comparison is worked out in the README from the stored token counts and the provider's published prices, which are not hard-coded.
 
 ### Model names

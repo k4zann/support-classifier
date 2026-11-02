@@ -64,7 +64,7 @@ The service SHALL never return a `summary` longer than 150 characters. If the mo
 - **THEN** the response is 200, the summary is at most 150 characters and ends on a whole word, and a warning is logged
 
 ### Requirement: Batch classification
-The service SHALL expose `POST /classify/batch`, which accepts `{"texts": [<string>, ...]}` with 1 to 50 items, each following the same rules as single classification. If the list is empty, holds more than 50 items, or any item is invalid, the whole request SHALL be rejected with 422 and no model calls. Otherwise the service SHALL return HTTP 200 with `{"results": [...]}` in the same order as the input. Each item is either `{"category", "urgency", "summary"}` or `{"error": <generic message>}`. The number of concurrent model calls SHALL be limited by a configured value (default 5).
+The service SHALL expose `POST /classify/batch`, which accepts `{"texts": [<string>, ...]}` with 1 to 50 items, each following the same rules as single classification. If the list is empty, holds more than 50 items, or any item is invalid, the whole request SHALL be rejected with 422 and no model calls. Otherwise the service SHALL return HTTP 200 with `{"results": [...]}` in the same order as the input. Each item is either `{"category", "urgency", "summary"}` or `{"error": <generic message>}`. The number of concurrent model calls SHALL be limited by a configured value (default 5), shared by all batch requests to the service.
 
 #### Scenario: All items succeed
 - **WHEN** a client posts three valid texts
@@ -85,6 +85,10 @@ The service SHALL expose `POST /classify/batch`, which accepts `{"texts": [<stri
 #### Scenario: Concurrency limit
 - **WHEN** a client posts 50 texts with the concurrency limit set to 5
 - **THEN** no more than 5 model calls are in flight at any moment
+
+#### Scenario: Parallel batch requests share the limit
+- **WHEN** two batch requests are processed at the same time with the concurrency limit set to 3
+- **THEN** no more than 3 model calls are in flight across both requests
 
 ### Requirement: Configuration and secrets
 The service SHALL read the API key, model name, temperature (default 0), retry count and batch concurrency from environment variables or a `.env` file. None of these may be hard-coded. The repository MUST NOT contain the API key: `.env` is gitignored and `.env.example` lists the variables without values.

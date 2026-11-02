@@ -24,10 +24,11 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = Settings()
-    app.state.settings = settings
     prompt = load_prompt(settings.prompt_path)
     client = build_client(settings)
     app.state.classifier = Classifier(client, prompt, settings)
+    # One limit for the whole service, shared by all batch requests.
+    app.state.batch_semaphore = asyncio.Semaphore(settings.batch_concurrency)
     yield
     await client.aio.aclose()
 
@@ -50,8 +51,8 @@ def get_classifier(request: Request) -> Classifier:
     return request.app.state.classifier
 
 
-def get_settings(request: Request) -> Settings:
-    return request.app.state.settings
+def get_batch_semaphore(request: Request) -> asyncio.Semaphore:
+    return request.app.state.batch_semaphore
 
 
 @app.get("/health")
@@ -70,10 +71,8 @@ async def classify(
 async def classify_batch(
     body: BatchRequest,
     classifier: Annotated[Classifier, Depends(get_classifier)],
-    settings: Annotated[Settings, Depends(get_settings)],
+    semaphore: Annotated[asyncio.Semaphore, Depends(get_batch_semaphore)],
 ) -> BatchResponse:
-    semaphore = asyncio.Semaphore(settings.batch_concurrency)
-
     async def classify_one(text: str) -> BatchItem:
         async with semaphore:
             try:

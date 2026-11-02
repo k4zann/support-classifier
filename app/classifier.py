@@ -72,6 +72,9 @@ class Classifier:
             "thinking_tokens": 0,
             "total_tokens": 0,
         }
+        # Model calls made by the latest classify(), retries included; the eval
+        # harness (one row at a time) stores it per row. Not in the HTTP response.
+        self.last_attempts = 0
 
     def _add_usage(self, response: Any) -> None:
         # Real responses always have the attribute (possibly None); fakes may not.
@@ -91,6 +94,7 @@ class Classifier:
             response_schema=ModelOutput,
         )
         for attempt in range(1, self.settings.max_retries + 1):
+            self.last_attempts = attempt
             try:
                 response = await self.client.aio.models.generate_content(
                     model=self.settings.gemini_model, contents=text, config=config

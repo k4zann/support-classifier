@@ -39,7 +39,7 @@ The eval runner SHALL classify every dataset row through the same classification
 - **THEN** the runner records it and continues to the next row
 
 ### Requirement: Saved run results
-Each eval run SHALL save a JSON file to `evals/results/<YYYY-MM-DD_HH-MM-SS>.json` with: timestamp, model name, temperature, prompt file path and content hash, dataset hash and row count, all metrics, the confusion matrix, per-row predictions, the error list, and the per-row and total latency.
+Each eval run SHALL save a JSON file to `evals/results/<YYYY-MM-DD_HH-MM-SS>.json` with: timestamp, model name, temperature, prompt file path and content hash, dataset hash and row count, the retry count, batch concurrency and request timeout used, all metrics, the confusion matrix, per-row predictions with the number of model call attempts, the error list, and the per-row and total latency. The hashes SHALL describe the files as they were when classification started. A run SHALL NOT overwrite an existing result file.
 
 #### Scenario: Result file written
 - **WHEN** a run finishes
@@ -48,6 +48,10 @@ Each eval run SHALL save a JSON file to `evals/results/<YYYY-MM-DD_HH-MM-SS>.jso
 #### Scenario: Runs are comparable
 - **WHEN** two runs use different prompt files on the same dataset
 - **THEN** their result files have the same dataset hash and different prompt hashes
+
+#### Scenario: Two runs in the same second
+- **WHEN** a run is saved with the same timestamp as an existing result file
+- **THEN** both files exist and the first is unchanged
 
 ### Requirement: Run parameters for iterations and model comparison
 The eval runner SHALL accept `--prompt <path>`, `--model <name>` and `--temperature <float>`, which override the configured values for that run only. Without these flags it SHALL use the service's configured prompt, model and temperature.

@@ -8,8 +8,11 @@ Usage: uv run python -m evals.run_eval [--dataset PATH] [--prompt PATH]
 import argparse
 import asyncio
 import hashlib
+import itertools
 import json
 import logging
+import os
+import tempfile
 import time
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
@@ -46,6 +49,9 @@ class RowResult:
     summary: str | None
     error: str | None
     latency_s: float
+    # Model calls for this row, retries included; None if the classifier
+    # does not count them (test fakes).
+    attempts: int | None
 
 
 def _describe(exc: Exception) -> str:
@@ -81,6 +87,7 @@ async def evaluate(rows: list[dict], classifier: SupportsClassify) -> list[RowRe
                 summary=predicted.summary if predicted else None,
                 error=error,
                 latency_s=latency,
+                attempts=getattr(classifier, "last_attempts", None),
             )
         )
     return results
@@ -199,14 +206,28 @@ def build_classifier(settings: Settings) -> Classifier:
 def save_result(results_dir: Path, started: datetime, result: dict) -> Path:
     """Write the run to <results_dir>/<YYYY-MM-DD_HH-MM-SS>.json.
 
-    Written to a .tmp file first, so an interrupted write leaves no half-file.
+    An existing file is never overwritten: a second run started in the same
+    second gets <...>_2.json, then _3 and so on. Written to a .tmp file first,
+    so an interrupted write leaves no half-file.
     """
     results_dir.mkdir(parents=True, exist_ok=True)
-    path = results_dir / f"{started:%Y-%m-%d_%H-%M-%S}.json"
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    tmp.replace(path)
-    return path
+    fd, tmp_name = tempfile.mkstemp(dir=results_dir, suffix=".tmp")
+    tmp = Path(tmp_name)
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(json.dumps(result, ensure_ascii=False, indent=2))
+    stem = f"{started:%Y-%m-%d_%H-%M-%S}"
+    try:
+        for n in itertools.count(1):
+            path = results_dir / (f"{stem}.json" if n == 1 else f"{stem}_{n}.json")
+            try:
+                # Unlike rename, link fails if the name is taken, even between
+                # two processes racing for the same name.
+                os.link(tmp, path)
+                return path
+            except FileExistsError:
+                continue
+    finally:
+        tmp.unlink()
 
 
 def main(
@@ -234,6 +255,9 @@ def main(
     rows = [row for _, row in load_rows(args.dataset)[0]]
     settings = build_settings(args)
     classifier = make_classifier(settings)
+    # Hashed before classifying, so an edit during the run can't change them.
+    prompt_hash = sha256_of(Path(settings.prompt_path))
+    dataset_hash = sha256_of(args.dataset)
     started = datetime.now()
     trims = TrimCounter()
     classifier_logger = logging.getLogger("app.classifier")
@@ -245,8 +269,6 @@ def main(
     metrics = compute_metrics(results)
     print_report(metrics)
 
-    prompt_hash = sha256_of(Path(settings.prompt_path))
-    dataset_hash = sha256_of(args.dataset)
     total_latency = sum(r.latency_s for r in results)
     path = save_result(
         results_dir,
@@ -260,6 +282,10 @@ def main(
             "dataset_path": str(args.dataset),
             "dataset_sha256": dataset_hash,
             "dataset_rows": len(rows),
+            # Run conditions: latency includes retry backoff, see per-row attempts.
+            "max_retries": settings.max_retries,
+            "batch_concurrency": settings.batch_concurrency,
+            "request_timeout_s": settings.request_timeout_s,
             **metrics,
             "latency_s": {"total": total_latency, "mean": total_latency / len(rows)},
             # Only the real Classifier counts tokens; test fakes may not.

@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from collections.abc import Iterator
+from pathlib import Path
 
 import httpx
 import pytest
@@ -8,10 +9,11 @@ from fastapi.testclient import TestClient
 
 from app.classifier import Classifier, ClassifierError
 from app.config import Settings
-from app.main import app, get_classifier, get_settings
+from app.main import app, get_batch_semaphore, get_classifier, lifespan
 from app.schemas import Category, ClassifyResponse, Urgency
 from tests.fakes import FakeModels, fake_client
 
+REPO_PROMPT = Path(__file__).parent.parent / "prompts" / "classify.md"
 PROVIDER_TEXT = "503 UNAVAILABLE: generativelanguage.googleapis.com key=AIza-secret"
 
 
@@ -44,9 +46,8 @@ class FakeClassifier:
 
 def use(fake: FakeClassifier) -> None:
     app.dependency_overrides[get_classifier] = lambda: fake
-    app.dependency_overrides[get_settings] = lambda: Settings(
-        _env_file=None, GEMINI_API_KEY="test", batch_concurrency=5
-    )
+    # No lifespan in these tests, so the limit is supplied here.
+    app.dependency_overrides[get_batch_semaphore] = lambda: asyncio.Semaphore(5)
 
 
 @pytest.fixture(autouse=True)
@@ -122,6 +123,40 @@ def test_batch_limits_concurrent_calls() -> None:
     assert 1 < fake.max_in_flight <= 5
 
 
+def test_concurrency_limit_is_shared_by_parallel_batch_requests(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    # The real lifespan (it owns the limit) with the fake classifier.
+    monkeypatch.chdir(tmp_path)  # keep the real repo .env out
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setenv("PROMPT_PATH", str(REPO_PROMPT))
+    monkeypatch.setenv("BATCH_CONCURRENCY", "3")
+    fake = FakeClassifier()
+    app.dependency_overrides[get_classifier] = lambda: fake
+
+    async def two_batches_at_once() -> list[httpx.Response]:
+        async with lifespan(app):
+            transport = httpx.ASGITransport(app=app)
+            async with httpx.AsyncClient(
+                transport=transport, base_url="http://test"
+            ) as client:
+                return await asyncio.gather(
+                    *(
+                        client.post(
+                            "/classify/batch",
+                            json={"texts": [f"{n}-{i}" for i in range(10)]},
+                        )
+                        for n in ("a", "b")
+                    )
+                )
+
+    responses = asyncio.run(two_batches_at_once())
+
+    assert [r.status_code for r in responses] == [200, 200]
+    assert len(fake.texts) == 20
+    assert 1 < fake.max_in_flight <= 3
+
+
 @pytest.mark.usefixtures("no_backoff")
 def test_batch_connection_errors_become_per_item_errors(
     caplog: pytest.LogCaptureFixture,
@@ -131,7 +166,7 @@ def test_batch_connection_errors_become_per_item_errors(
     models = FakeModels(httpx.ConnectError("provider says no"))
     classifier = Classifier(fake_client(models), "prompt", settings)
     app.dependency_overrides[get_classifier] = lambda: classifier
-    app.dependency_overrides[get_settings] = lambda: settings
+    app.dependency_overrides[get_batch_semaphore] = lambda: asyncio.Semaphore(5)
     client = TestClient(app)
 
     with caplog.at_level(logging.ERROR):
