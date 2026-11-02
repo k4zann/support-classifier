@@ -49,7 +49,7 @@
 
 ## 10. Model comparison (bonus)
 
-- [ ] 10.1 Pick the comparison model from Google's current list and run the eval with the final prompt on both models. Verify: two result files with different `model` values exist, and a comparison table (accuracy, mean latency, tokens and estimated cost) is drafted for the README
+- [x] 10.1 Pick the comparison model from Google's current list and run the eval with the final prompt on both models. Verify: two result files with different `model` values exist, and a comparison table (accuracy, mean latency, tokens and estimated cost) is drafted for the README
 
 ## 11. README and final checks
 
