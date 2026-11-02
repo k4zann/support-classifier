@@ -39,7 +39,7 @@ def test_env_example_with_only_key_set_uses_defaults(tmp_path: Path) -> None:
     settings = Settings(_env_file=env_file)
 
     assert settings.gemini_api_key == "test-key"
-    assert settings.gemini_model == "gemini-3.8-flash"
+    assert settings.gemini_model == "gemini-3.5-flash"
     assert settings.temperature == 0.0
     assert settings.max_retries == 3
     assert settings.batch_concurrency == 5
