@@ -29,8 +29,8 @@
 
 ## 6. Eval harness: runner, metrics and saved results
 
-- [ ] 6.1 Write failing tests for `evals/run_eval.py` with a fake classifier on a tiny dataset: correct category, urgency and hard-only accuracy; confusion matrix cells; error list entries; a failing row counted as wrong in every denominator without stopping the run; an invalid dataset → non-zero exit with no classifier calls. Then implement the runner. Verify: tests pass
-- [ ] 6.2 Write a failing test: the run writes `evals/results/<timestamp>.json` with model, temperature, prompt path and hash, dataset hash and row count, metrics, per-row predictions, errors, latency, token usage and the trimmed-summary count; and `--prompt`, `--model`, `--temperature` override config. Then implement it. Verify: the test passes, and a real run on the student's dataset produces a result file
+- [x] 6.1 Write failing tests for `evals/run_eval.py` with a fake classifier on a tiny dataset: correct category, urgency and hard-only accuracy; confusion matrix cells; error list entries; a failing row counted as wrong in every denominator without stopping the run; an invalid dataset → non-zero exit with no classifier calls. Then implement the runner. Verify: tests pass
+- [x] 6.2 Write a failing test: the run writes `evals/results/<timestamp>.json` with model, temperature, prompt path and hash, dataset hash and row count, metrics, per-row predictions, errors, latency, token usage and the trimmed-summary count; and `--prompt`, `--model`, `--temperature` override config. Then implement it. Verify: the test passes, and a real run on the student's dataset produces a result file
 
 ## 7. Prompt versions and iterations
 

@@ -53,6 +53,24 @@ class Classifier:
         self.client = client
         self.prompt = prompt
         self.settings = settings
+        # Running totals from Gemini's `usage_metadata`; the eval harness stores
+        # them so the README can estimate cost. Not part of the HTTP response.
+        self.token_usage = {
+            "prompt_tokens": 0,
+            "output_tokens": 0,
+            "thinking_tokens": 0,
+            "total_tokens": 0,
+        }
+
+    def _add_usage(self, response: Any) -> None:
+        # Real responses always have the attribute (possibly None); fakes may not.
+        usage = getattr(response, "usage_metadata", None)
+        if usage is None:
+            return
+        self.token_usage["prompt_tokens"] += usage.prompt_token_count or 0
+        self.token_usage["output_tokens"] += usage.candidates_token_count or 0
+        self.token_usage["thinking_tokens"] += usage.thoughts_token_count or 0
+        self.token_usage["total_tokens"] += usage.total_token_count or 0
 
     async def classify(self, text: str) -> ClassifyResponse:
         config = types.GenerateContentConfig(
@@ -72,6 +90,8 @@ class Classifier:
                     raise ClassifierError("model call failed") from exc
                 await asyncio.sleep(backoff_delay(attempt))
 
+        # Counted before parsing: an invalid answer still used tokens.
+        self._add_usage(response)
         try:
             output = response.parsed
             if not isinstance(output, ModelOutput):
