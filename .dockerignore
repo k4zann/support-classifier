@@ -1,0 +1,9 @@
+# Secrets: the API key arrives only at runtime via env_file.
+.env
+.venv
+.git
+evals/results
+# Local caches
+__pycache__
+.pytest_cache
+.ruff_cache

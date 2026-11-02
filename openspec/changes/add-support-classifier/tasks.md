@@ -45,7 +45,7 @@
 
 ## 9. Docker (bonus)
 
-- [ ] 9.1 Add `Dockerfile`, `.dockerignore` (excludes `.env`, `.venv`, `.git`, `evals/results`) and `docker-compose.yml` (`env_file: .env`, port 8000). Verify: `docker compose up --build`, then `curl localhost:8000/health` → `{"status":"ok"}`, and `docker compose run --rm app ls -a` shows no `.env`
+- [x] 9.1 Add `Dockerfile`, `.dockerignore` (excludes `.env`, `.venv`, `.git`, `evals/results`) and `docker-compose.yml` (`env_file: .env`, port 8000). Verify: `docker compose up --build`, then `curl localhost:8000/health` → `{"status":"ok"}`, and `docker compose run --rm app ls -a` shows no `.env`
 
 ## 10. Model comparison (bonus)
 
