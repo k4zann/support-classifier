@@ -1,8 +1,10 @@
+import logging
 from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
 
+from app.classifier import ClassifierError
 from app.main import app, get_classifier
 from app.schemas import Category, ClassifyResponse, Urgency
 
@@ -78,3 +80,29 @@ def test_classify_accepts_text_at_the_limit(fake: FakeClassifier) -> None:
 
     assert response.status_code == 200
     assert fake.texts == [text]
+
+
+PROVIDER_TEXT = "503 UNAVAILABLE: generativelanguage.googleapis.com key=AIza-secret"
+
+
+class FailingClassifier:
+    async def classify(self, text: str) -> ClassifyResponse:
+        raise ClassifierError(PROVIDER_TEXT)
+
+
+def test_classify_maps_classifier_error_to_502(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    app.dependency_overrides[get_classifier] = lambda: FailingClassifier()
+    client = TestClient(app)
+
+    try:
+        with caplog.at_level(logging.ERROR):
+            response = client.post("/classify", json={"text": SMS_TEXT})
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "classification failed"}
+    assert PROVIDER_TEXT not in response.text
+    assert PROVIDER_TEXT in caplog.text

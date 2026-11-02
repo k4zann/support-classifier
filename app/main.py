@@ -1,13 +1,17 @@
+import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse
 from google import genai
 
-from app.classifier import Classifier
+from app.classifier import Classifier, ClassifierError
 from app.config import Settings, load_prompt
 from app.schemas import ClassifyRequest, ClassifyResponse
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -20,6 +24,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="Support classifier", lifespan=lifespan)
+
+
+@app.exception_handler(ClassifierError)
+async def classifier_error_handler(
+    request: Request, exc: ClassifierError
+) -> JSONResponse:
+    # The traceback (with the chained provider error) goes to the log only;
+    # the client gets a fixed message so no provider text or secrets leak.
+    logger.error("classification failed", exc_info=exc)
+    return JSONResponse(status_code=502, content={"detail": "classification failed"})
 
 
 def get_classifier(request: Request) -> Classifier:

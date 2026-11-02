@@ -18,9 +18,9 @@
 
 ## 4. Model failure handling (retry, 502, trimming)
 
-- [ ] 4.1 Write failing tests with a fake client: a 429 followed by success → result; 5xx on every attempt → `ClassifierError` after `max_retries`; invalid enum or missing field → `ClassifierError` with no retry; a non-429 4xx → no retry. Then implement the retry loop with backoff (backoff patched to 0 in tests). Verify: tests pass
-- [ ] 4.2 Write a failing endpoint test: a classifier raising `ClassifierError` → 502 with generic `detail`, provider text absent, and the error logged (checked with `caplog`). Then map it in `app/main.py`. Verify: the test passes
-- [ ] 4.3 Write a failing test: a 200-character model summary → returned summary ≤150 characters, ending on a whole word, with a warning logged; and the hard-cut case with no spaces. Then implement trimming. Verify: tests pass
+- [x] 4.1 Write failing tests with a fake client: a 429 followed by success → result; 5xx on every attempt → `ClassifierError` after `max_retries`; invalid enum or missing field → `ClassifierError` with no retry; a non-429 4xx → no retry. Then implement the retry loop with backoff (backoff patched to 0 in tests). Verify: tests pass
+- [x] 4.2 Write a failing endpoint test: a classifier raising `ClassifierError` → 502 with generic `detail`, provider text absent, and the error logged (checked with `caplog`). Then map it in `app/main.py`. Verify: the test passes
+- [x] 4.3 Write a failing test: a 200-character model summary → returned summary ≤150 characters, ending on a whole word, with a warning logged; and the hard-cut case with no spaces. Then implement trimming. Verify: tests pass
 
 ## 5. Eval harness: dataset validation
 
