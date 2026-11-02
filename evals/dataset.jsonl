@@ -1,0 +1,42 @@
+{"id": 1, "text": "Не могу войти в аккаунт: пишет, что пароль неверный, хотя я его не менял", "category": "auth", "urgency": "high"}
+{"id": 2, "text": "Как поменять номер телефона, привязанный к аккаунту?", "category": "auth", "urgency": "low"}
+{"id": 3, "text": "Аккаунт заблокировали после трёх попыток ввода пароля, а мне срочно нужно оформить заказ", "category": "auth", "urgency": "high"}
+{"id": 4, "text": "Письмо для подтверждения регистрации пришло только через час, сейчас уже всё работает, просто сообщаю", "category": "auth", "urgency": "low"}
+{"id": 5, "text": "Восстановление пароля по почте не работает, но через SMS войти получилось", "category": "auth", "urgency": "medium"}
+{"id": 6, "text": "Деньги за заказ списали два раза, верните вторую оплату", "category": "payment", "urgency": "high"}
+{"id": 7, "text": "Хочу узнать, какие тарифы есть для бизнеса", "category": "payment", "urgency": "low"}
+{"id": 8, "text": "Чек по последней покупке не пришёл на почту, пришлите, пожалуйста", "category": "payment", "urgency": "medium"}
+{"id": 9, "text": "Возврат за отменённый заказ обещали за 3 дня, прошла неделя, денег до сих пор нет", "category": "payment", "urgency": "medium"}
+{"id": 10, "text": "Карта не проходит при оплате, другой картой оплатить получилось", "category": "payment", "urgency": "medium"}
+{"id": 11, "text": "Курьер не приехал в назначенное время, жду с самого утра", "category": "delivery", "urgency": "medium"}
+{"id": 12, "text": "Подскажите, сколько обычно идёт доставка в Караганду?", "category": "delivery", "urgency": "low"}
+{"id": 13, "text": "Статус заказа уже пять дней «передан в доставку» и не меняется", "category": "delivery", "urgency": "medium"}
+{"id": 14, "text": "Привезли не тот товар, а он нужен мне сегодня к вечеру на день рождения", "category": "delivery", "urgency": "high"}
+{"id": 15, "text": "Можно ли доставить заказ в пункт выдачи вместо домашнего адреса?", "category": "delivery", "urgency": "low"}
+{"id": 16, "text": "Приложение вылетает сразу после запуска, ничего не могу сделать", "category": "technical", "urgency": "high"}
+{"id": 17, "text": "На сайте не грузятся картинки товаров, но в приложении всё нормально", "category": "technical", "urgency": "medium"}
+{"id": 18, "text": "Кнопка «Добавить в корзину» не нажимается в Safari, в Chrome работает", "category": "technical", "urgency": "medium"}
+{"id": 19, "text": "Каталог не открывается ни на сайте, ни в приложении, везде ошибка 500", "category": "technical", "urgency": "high"}
+{"id": 20, "text": "В тёмной теме приложения местами белый текст на белом фоне, приходится выделять, чтобы прочитать", "category": "technical", "urgency": "medium"}
+{"id": 21, "text": "Добавьте, пожалуйста, возможность сохранять список избранного", "category": "other", "urgency": "low"}
+{"id": 22, "text": "Работаете ли вы в праздничные дни?", "category": "other", "urgency": "low"}
+{"id": 23, "text": "Хочу предложить сотрудничество, с кем можно связаться?", "category": "other", "urgency": "low"}
+{"id": 24, "text": "Вы классные, пользуюсь уже два года и всем советую", "category": "other", "urgency": "low"}
+{"id": 25, "text": "не могу зайти, пишет нверный пороль, уже три раза сбрасывал", "category": "auth", "urgency": "high", "hard": true}
+{"id": 26, "text": "ltymub cgbcfkb ldf hfpf pf jlby pfrfp", "category": "payment", "urgency": "high", "hard": true}
+{"id": 27, "text": "zakaz ne priehal uzhe nedelyu, kur'er ne otvechaet na zvonki", "category": "delivery", "urgency": "medium", "hard": true}
+{"id": 28, "text": "приложениезависаетнаэкранеоплатыикрутитсябесконечно", "category": "technical", "urgency": "high", "hard": true}
+{"id": 29, "text": "ВЕРНИТЕ ДЕНЬГИ!!! СПИСАЛИ ЗА ПОДПИСКУ КОТОРУЮ Я ОТМЕНИЛ!!!", "category": "payment", "urgency": "high", "hard": true}
+{"id": 30, "text": "щас не могу войти ваще, смс не приходит, помогите плз", "category": "auth", "urgency": "high", "hard": true}
+{"id": 31, "text": "Сәлеметсіз бе, заказ әлі келмеді, қашан доставка болады?", "category": "delivery", "urgency": "medium", "hard": true}
+{"id": 32, "text": "payment failed но деньги списались, plz chek", "category": "payment", "urgency": "high", "hard": true}
+{"id": 33, "text": "не рабоатет", "category": "technical", "urgency": "medium", "hard": true}
+{"id": 34, "text": "забыл пороль", "category": "auth", "urgency": "medium", "hard": true}
+{"id": 35, "text": "оплта не прошла, а заказ всё равно оформился — с меня потом спишут?", "category": "payment", "urgency": "medium", "hard": true}
+{"id": 36, "text": "Отличный сервис: третий раз ввожу код из смс и третий раз «неверный код». Браво.", "category": "auth", "urgency": "high", "hard": true}
+{"id": 37, "text": "Спасибо курьеру Ержану, очень вежливый и быстрый!", "category": "other", "urgency": "low", "hard": true}
+{"id": 38, "text": "Здравствуйте. Пишу уже не первый раз, прошлые обращения остались без ответа. Две недели назад я оформил заказ на кухонный комбайн, оплатил сразу картой, всё прошло нормально, чек пришёл. Потом в приложении статус поменялся на «в пути», и с тех пор ничего не происходит. Трек-номер на сайте перевозчика не находится, в чате поддержки отвечает только бот. Я не прошу ничего особенного, просто скажите, где мой заказ и когда его привезут.", "category": "delivery", "urgency": "medium", "hard": true}
+{"id": 39, "text": "сайт выдаёт ошибку при попытке сохранить адрес доставки, пишет что-то про сервер", "category": "technical", "urgency": "medium", "hard": true}
+{"id": 40, "text": "cant login to my acount, forgot pasword and reset email never comes", "category": "auth", "urgency": "high", "hard": true}
+{"id": 41, "text": "а у вас есть вакансии? хочу рабоать курьером", "category": "other", "urgency": "low", "hard": true}
+{"id": 42, "text": "cgfcb,j", "category": "other", "urgency": "low", "hard": true}
