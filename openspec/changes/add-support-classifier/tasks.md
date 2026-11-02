@@ -14,7 +14,7 @@
 
 ## 3. Input validation errors (422)
 
-- [ ] 3.1 Write failing tests for empty, whitespace-only, 4001-character, missing and non-string `text` → 422 with readable messages, and exactly 4000 characters → accepted, with no classifier call on rejection. Then add the validator to `ClassifyRequest`. Verify: all tests pass
+- [x] 3.1 Write failing tests for empty, whitespace-only, 4001-character, missing and non-string `text` → 422 with readable messages, and exactly 4000 characters → accepted, with no classifier call on rejection. Then add the validator to `ClassifyRequest`. Verify: all tests pass
 
 ## 4. Model failure handling (retry, 502, trimming)
 

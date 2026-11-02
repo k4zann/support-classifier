@@ -1,6 +1,7 @@
 from enum import Enum
+from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import AfterValidator, BaseModel, Field
 
 
 # str Enums: Gemini's schema conversion maps them reliably to a JSON `enum`.
@@ -18,8 +19,19 @@ class Urgency(str, Enum):
     low = "low"
 
 
+def _not_blank(text: str) -> str:
+    if not text.strip():
+        raise ValueError("text must not be empty")
+    return text
+
+
+# Shared by ClassifyRequest and, later, each item of BatchRequest.
+# The 4000-character limit applies to the text as sent, before any stripping.
+SupportText = Annotated[str, Field(max_length=4000), AfterValidator(_not_blank)]
+
+
 class ClassifyRequest(BaseModel):
-    text: str
+    text: SupportText
 
 
 class ClassifyResponse(BaseModel):

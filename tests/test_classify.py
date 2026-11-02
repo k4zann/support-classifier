@@ -43,3 +43,38 @@ def test_classify_returns_classification(fake: FakeClassifier) -> None:
         "summary": "Клиент не получает SMS-код и не может войти.",
     }
     assert fake.texts == [SMS_TEXT]
+
+
+@pytest.mark.parametrize(
+    ("body", "expected_msg"),
+    [
+        ({"text": ""}, "must not be empty"),
+        ({"text": "   \n "}, "must not be empty"),
+        ({"text": "a" * 4001}, "4000"),
+        ({}, "Field required"),
+        ({"text": 123}, "valid string"),
+    ],
+    ids=["empty", "whitespace", "too-long", "missing", "not-a-string"],
+)
+def test_classify_rejects_invalid_text(
+    fake: FakeClassifier, body: dict[str, object], expected_msg: str
+) -> None:
+    client = TestClient(app)
+
+    response = client.post("/classify", json=body)
+
+    assert response.status_code == 422
+    [error] = response.json()["detail"]
+    assert error["loc"] == ["body", "text"]
+    assert expected_msg in error["msg"]
+    assert fake.texts == []
+
+
+def test_classify_accepts_text_at_the_limit(fake: FakeClassifier) -> None:
+    client = TestClient(app)
+    text = "a" * 4000
+
+    response = client.post("/classify", json={"text": text})
+
+    assert response.status_code == 200
+    assert fake.texts == [text]
